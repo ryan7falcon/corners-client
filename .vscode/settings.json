@@ -1,0 +1,13 @@
+{
+    "emmet.excludeLanguages": [
+
+        "markdown"
+    ],
+    
+        "emmet.includeLanguages": {
+           "javascript": "javascriptreact"
+        },
+        "javascript.validate.enable": false,
+        "standard.autoFixOnSave": true
+     
+}
