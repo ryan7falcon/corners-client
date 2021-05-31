@@ -107,7 +107,7 @@ function App () {
   return (
     <div className={classes.app}>
       <header className={classes.appHeader}>
-        <div className={classes.gameHeader}>Game of Corners</div>
+        <div className={classes.gameHeader}>Game of Corners  🚧 🛠  Under Construction ⚙ 🚧</div>
         <div className={classes.gameContainer}>
           <DisplayBoard board={game.board} handleSelectCell={handleSelectCell} selectedCell={selectedCell} icons={icons} />
           <div className={classes.gameColumn}>
