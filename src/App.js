@@ -1,6 +1,6 @@
 // import logo from './logo.svg'
 import './App.css'
-import { START_STATE, moveAction, endTurnAction, gameBrain, createInitState } from './Game'
+import { moveAction, endTurnAction, gameBrain, createInitState } from './Game'
 import { useState, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import DisplayState from './DisplayState'

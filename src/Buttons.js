@@ -22,9 +22,11 @@ const useStyles = createUseStyles({
     span: {
       zIndex: 20
     },
+    cursor: 'pointer',
     overflow: 'hidden',
     position: 'relative',
     boxShadow: '2px 5px 5px 5px rgb(0 0 0 / 5%)',
+    transition: 'all 500ms cubic-bezier(0.19, 1, 0.22, 1)',
     '&:after': {
       background: '#fff',
       content: "''",
@@ -39,6 +41,9 @@ const useStyles = createUseStyles({
       zIndex: '10'
     },
     '&:hover': {
+      transform: 'scale(1.01)',
+      transition: 'all 500ms cubic-bezier(0.19, 1, 0.22, 1)',
+      boxShadow: '2px 5px 5px 8px rgb(0 0 0 / 8%)',
       '&:after': {
         left: '120%',
         transition: 'all 1000ms cubic-bezier(0.19, 1, 0.22, 1)'

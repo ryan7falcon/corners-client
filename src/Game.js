@@ -39,15 +39,14 @@ const START_STATE = {
   win: 0,
   gameOver: false,
   actionsHistory: [],
-  message: 'Player 💩 turn',
-  icons: ['💩', '💎']
+  message: 'Player 💩 turn'
 }
 
-const createInitState = (icons) => {
+const createInitState = (icons = ['💩', '💎']) => {
   return {
     ...START_STATE,
     icons,
-    message: `player ${icons[0]} turn`
+    message: `Player ${icons[0]} turn`
   }
 }
 
@@ -92,7 +91,7 @@ function gameBrain (state, action) {
       newState.board[newX][newY] = newState.board[x][y]
       newState.board[x][y] = 0
       newState.endTurnAllowed = true
-      newState.message = `Player ${newState.playerTurn}: ${action.payload.move.startPos} to ${action.payload.move.targetPos}`
+      newState.message = `Player ${newState.icons[newState.playerTurn - 1]}: ${action.payload.move.startPos} to ${action.payload.move.targetPos}`
       newState.actionsHistory.push(newState.message)
 
       return newState
@@ -118,4 +117,4 @@ function gameBrain (state, action) {
   }
 }
 
-export { endTurnAction, moveAction, gameBrain, START_STATE, ONE_WIN_MASK, TWO_WIN_MASK, createInitState }
+export { endTurnAction, moveAction, gameBrain, createInitState }
