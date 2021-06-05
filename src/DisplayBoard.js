@@ -66,6 +66,7 @@ const useStyles = createUseStyles({
 
 })
 // TODO: add row and column indecies
+// TODO: make icons non-selectable
 function DisplayBoard ({ board, handleSelectCell, selectedCell, icons }) {
   const classes = useStyles()
   return (
