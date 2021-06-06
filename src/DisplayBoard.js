@@ -62,12 +62,16 @@ const useStyles = createUseStyles({
         transition: 'none'
       }
     }
+  },
+  validMoveCell: {
+    extend: 'cell',
+    background: 'rgba(0,255,0,0.1)'
   }
 
 })
-// TODO: add row and column indecies
-// TODO: make icons non-selectable
-function DisplayBoard ({ board, handleSelectCell, selectedCell, icons }) {
+// TODO: add row and column indecies (chessboard notation)
+// TODO: make icons non-selectable as text
+function DisplayBoard ({ board, handleSelectCell, selectedCell, icons, validMoves, isValidMove }) {
   const classes = useStyles()
   return (
     <div className={classes.boardContainer}>
@@ -86,6 +90,9 @@ function DisplayBoard ({ board, handleSelectCell, selectedCell, icons }) {
                   key={[rowIndex, columnIndex]}
                   selected={selectedCell && (selectedCell[0] === rowIndex) && (selectedCell[1] === columnIndex)}
                   icons={icons}
+                  isValidMove={isValidMove(validMoves, [selectedCell, [rowIndex, columnIndex]])}
+                  validMoveClassName={classes.validMoveCell}
+
                 />))}
             </div>
           ))
@@ -95,9 +102,9 @@ function DisplayBoard ({ board, handleSelectCell, selectedCell, icons }) {
   )
 }
 
-function Cell ({ x, className, selectedClassName, handleSelect, rowIndex, columnIndex, selected, icons }) {
+function Cell ({ x, className, selectedClassName, validMoveClassName, handleSelect, rowIndex, columnIndex, selected, icons, isValidMove }) {
   return (
-    <div className={selected ? selectedClassName : className} key={columnIndex} onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}>
+    <div className={selected ? selectedClassName : isValidMove ? validMoveClassName : className} key={columnIndex} onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}>
       {(x === 1) ? icons[0] : (x === 2) ? icons[1] : ''}
     </div>
   )

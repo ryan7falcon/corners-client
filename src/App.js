@@ -1,6 +1,6 @@
 // import logo from './logo.svg'
 import './App.css'
-import { moveAction, endTurnAction, gameBrain, createInitState } from './Game'
+import { moveAction, endTurnAction, gameBrain, createInitState, getValidMovesFor, isValidMoveFor, isValidMove } from './Game'
 import { useState, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import DisplayState from './DisplayState'
@@ -45,14 +45,8 @@ const useStyles = createUseStyles({
     }
   }
 })
-// TODO: not select empty cells or opponent cells
-// TODO: pass selected cell to move
-// TODO: capture target cell and do the move
-// TODO: logic for selecting only valid cells
-// TODO: highlight valid cells to select
-// TODO: unit tests
-// TODO: drag and drop
 
+// TODO: Display game over message and restart game button
 function App () {
   const classes = useStyles()
 
@@ -70,6 +64,7 @@ function App () {
 
   const [selectedCell, setSelectedCell] = useState()
   const [game, dispatch] = useReducer(gameBrain, createInitState(icons))
+  const [validMoves, setValidMoves] = useState([])
 
   const move = (startPos, targetPos) => dispatch(moveAction(startPos, targetPos))
   const endTurn = () => dispatch(endTurnAction())
@@ -85,10 +80,11 @@ function App () {
         setSelectedCell([rowIndex, columnIndex])
       } else if (x === 0) {
       // make a move
-      // TODO: check if in allowed moves
-        move(selectedCell, [rowIndex, columnIndex])
-        // deselect
-        setSelectedCell(null)
+        if (isValidMoveFor(game, selectedCell, [selectedCell, [rowIndex, columnIndex]])) {
+          move(selectedCell, [rowIndex, columnIndex])
+          // deselect
+          setSelectedCell(null)
+        }
       } else {
       // ignore
       }
@@ -96,6 +92,7 @@ function App () {
     // if there is no active selection
     } else if (x === game.playerTurn) {
       setSelectedCell([rowIndex, columnIndex])
+      setValidMoves(getValidMovesFor(game, [rowIndex, columnIndex]))
     }
   }
 
@@ -109,7 +106,7 @@ function App () {
       <header className={classes.appHeader}>
         <div className={classes.gameHeader}>Game of Corners  🚧 🛠  Under Construction ⚙ 🚧</div>
         <div className={classes.gameContainer}>
-          <DisplayBoard board={game.board} handleSelectCell={handleSelectCell} selectedCell={selectedCell} icons={icons} />
+          <DisplayBoard board={game.board} handleSelectCell={handleSelectCell} selectedCell={selectedCell} icons={icons} isValidMove={isValidMove} validMoves={validMoves} />
           <div className={classes.gameColumn}>
             <DisplayState
               playerTurn={game.playerTurn}

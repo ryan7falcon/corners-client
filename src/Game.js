@@ -121,26 +121,74 @@ function move (state, startPos, targetPos) {
     throw new Error('state must have an "icons" property that is a 1-dimentional array')
   }
 
-  // get valid moves
-  const validMoves = getValidMoves(state)
-
   const newState = { ...state, board: JSON.parse(JSON.stringify(state.board)), actionsHistory: [...state.actionsHistory] }
   const [x, y] = startPos
   const [newX, newY] = targetPos
 
-  // TODO: check if valid move
-  newState.board[newX][newY] = newState.board[x][y]
-  newState.board[x][y] = 0
-  newState.endTurnAllowed = true
-  newState.message = `Player ${newState.icons[newState.playerTurn - 1]}: ${startPos} to ${targetPos}`
-  newState.actionsHistory.push([startPos, targetPos])
+  // check if valid move
+  if (isValidMove(getAllValidMoves(newState), [startPos, targetPos])) {
+    newState.board[newX][newY] = newState.board[x][y]
+    newState.board[x][y] = 0
+    newState.endTurnAllowed = true
+    newState.message = `Player ${newState.icons[newState.playerTurn - 1]}: ${startPos} to ${targetPos}`
+    newState.actionsHistory.push([startPos, targetPos])
+  } else throw new Error('invalid move')
 
   return newState
 }
 
-function getValidMoves (state) {
-  return []
+function arrayEquals (a, b) {
+  return Array.isArray(a) &&
+    Array.isArray(b) &&
+    a.length === b.length &&
+    a.every((val, index) => val === b[index])
 }
+
+function isValidMove (validMoves, m) {
+  if (!Array.isArray(validMoves)) {
+    throw new Error('validMoves must be an array')
+  }
+  if (!Array.isArray(m)) {
+    throw new Error('m must be an array')
+  }
+
+  return validMoves.some(ar => (arrayEquals(ar[0], m[0]) && arrayEquals(ar[1], m[1])))
+}
+
+function getAllValidMoves (state) {
+  const result = []
+  const startPositions = getAllOwnPositions(state)
+  for (const startPos of startPositions) {
+    result.push(...getValidMovesFor(state, startPos))
+  }
+  return result
+}
+
+function getAllOwnPositions (state) {
+  const positions = []
+  state.board.forEach((row, i) => (row.forEach((el, j) => {
+    if (el === state.playerTurn) {
+      positions.push([i, j])
+    }
+  })))
+  return positions
+}
+
+function getValidMovesFor (state, startPos) {
+  // TODO: calculate valid moves
+  const result = [[[6, 0], [4, 2]], [[4, 0], [4, 1]]]
+  return result
+}
+
+function isValidMoveFor (state, startPos, m) {
+  return isValidMove(getValidMovesFor(state, startPos), m)
+}
+
+// TODO: check for winning positions
+function checkWin (state) {
+  return false
+}
+
 // Get next state: end turn
 function endTurn (state) {
   // checks for valid input data format
@@ -163,16 +211,21 @@ function endTurn (state) {
   const newState = { ...state, board: JSON.parse(JSON.stringify(state.board)), actionsHistory: [...state.actionsHistory] }
   if (newState.endTurnAllowed) {
     // switch turns
-    newState.playerTurn = newState.playerTurn === 2 ? 1 : 2
+
     newState.endTurnAllowed = false
 
-    // TODO: check win
-    newState.message = `Player ${newState.icons[newState.playerTurn - 1]} turn`
+    if (checkWin(newState)) {
+      newState.gameOver = true
+      newState.win = newState.playerTurn
+    } else {
+      newState.playerTurn = newState.playerTurn === 2 ? 1 : 2
+      newState.message = `Player ${newState.icons[newState.playerTurn - 1]} turn`
+    }
   } else {
-    newState.message = 'End Turn is not allowed'
+    throw new Error('End Turn is not allowed')
   }
   // newState.actionsHistory.push(newState.message)
   return newState
 }
 
-export { endTurnAction, moveAction, gameBrain, createInitState, move, endTurn, START_BOARD, getValidMoves }
+export { endTurnAction, moveAction, gameBrain, createInitState, move, endTurn, START_BOARD, getAllValidMoves, isValidMove, getValidMovesFor, isValidMoveFor }

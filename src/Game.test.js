@@ -1,4 +1,4 @@
-import { move, endTurn, START_BOARD } from './Game'
+import { move, endTurn, START_BOARD, isValidMove, createInitState, getValidMovesFor } from './Game'
 
 /*
 beforeEach(()=>{
@@ -162,7 +162,7 @@ describe('Testing move', () => {
     const startPos = [4, 0]
     const targetPos = [4, 1]
 
-    expect(() => move(state, startPos, targetPos)).toEqual(expect.objectContaining({
+    expect(move(state, startPos, targetPos)).toEqual(expect.objectContaining({
       endTurnAllowed: false,
       playerTurn: 2
     }))
@@ -205,11 +205,7 @@ describe('Testing End Turn', () => {
   test('End Turn with endTurnAllowed: false', () => {
     const state = { endTurnAllowed: false, playerTurn: 1, board: START_BOARD, actionsHistory: [], icons: ['1', '2'] }
 
-    expect(endTurn(state)).toEqual(expect.objectContaining({
-
-      endTurnAllowed: false,
-      playerTurn: 1
-    }))
+    expect(() => endTurn(state)).toThrow('End Turn is not allowed')
   })
 
   test('End Turn with endTurnAllowed: true', () => {
@@ -259,5 +255,36 @@ describe('Testing End Turn', () => {
       win: 2,
       gameOver: true
     }))
+  })
+})
+
+describe('Test Valid moves check', () => {
+  test('valid move', () => {
+    const state = createInitState()
+    // jump
+    let m = [[6, 0], [4, 2]]
+    expect(isValidMove(getValidMovesFor(state, [6, 0]), m)).toBeTruthy()
+
+    // walk
+    m = [[4, 0], [4, 1]]
+    expect(isValidMove(getValidMovesFor(state, [4, 0]), m)).toBeTruthy()
+  })
+  test('invalid move', () => {
+    const state = createInitState()
+    // invalid jump
+    let m = [[6, 0], [5, 2]]
+    expect(isValidMove(getValidMovesFor(state, [6, 0]), m)).toBeFalsy()
+
+    // invalid walk - wrong player
+    m = [[0, 4], [1, 4]]
+    expect(isValidMove(getValidMovesFor(state, [0, 4]), m)).toBeFalsy()
+
+    // invalid walk - start 0
+    m = [[0, 0], [1, 4]]
+    expect(isValidMove(getValidMovesFor(state, [0, 0]), m)).toBeFalsy()
+
+    // invalid walk - target non-0
+    m = [[6, 0], [6, 1]]
+    expect(isValidMove(getValidMovesFor(state, [6, 0]), m)).toBeFalsy()
   })
 })
