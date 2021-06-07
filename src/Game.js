@@ -1,3 +1,9 @@
+function arrayEquals (a, b) {
+  return Array.isArray(a) &&
+    Array.isArray(b) &&
+    a.length === b.length &&
+    a.every((val, index) => val === b[index])
+}
 
 const START_BOARD = [
   [0, 0, 0, 0, 2, 2, 2, 2],
@@ -56,14 +62,15 @@ const actions = {
 }
 
 // actions
-function moveAction (startPos, targetPos) {
+function moveAction (startPos, targetPos, isWalk) {
   return {
     // move action
     type: actions.move,
     payload: {
       move: {
         startPos,
-        targetPos
+        targetPos,
+        isWalk
       }
     }
   }
@@ -82,7 +89,7 @@ function gameBrain (state, action) {
   switch (action.type) {
     // MOVE
     case actions.move: {
-      return move(state, action.payload.move.startPos, action.payload.move.targetPos)
+      return move(state, action.payload.move.startPos, action.payload.move.targetPos, action.payload.move.isWalk)
     }
     // END_TURN
     case actions.endTurn: {
@@ -97,9 +104,9 @@ function gameBrain (state, action) {
 const isObject = (obj) => {
   return Object.prototype.toString.call(obj) === '[object Object]'
 }
-
+// ===================================MOVE===================================
 // Get next state: Move
-function move (state, startPos, targetPos) {
+function move (state, startPos, targetPos, isWalk) {
   // checks for valid input data format
   if (!state || !isObject(state) || Object.entries(state).length === 0 || !startPos || !targetPos) {
     throw new Error('State must be a non-empty object, starting position and target must not be empty')
@@ -126,46 +133,39 @@ function move (state, startPos, targetPos) {
   const [newX, newY] = targetPos
 
   // check if valid move
-  if (isValidMove(getAllValidMoves(newState), [startPos, targetPos])) {
+  if (isValidMoveForState(newState, [startPos, targetPos])) {
     newState.board[newX][newY] = newState.board[x][y]
     newState.board[x][y] = 0
-    newState.endTurnAllowed = true
     newState.message = `Player ${newState.icons[newState.playerTurn - 1]}: ${startPos} to ${targetPos}`
     newState.actionsHistory.push([startPos, targetPos])
+    newState.endTurnAllowed = true
+    if (isWalk) {
+      return endTurn(newState)
+    }
   } else throw new Error('invalid move')
 
   return newState
 }
+// ===============================================================================
 
-function arrayEquals (a, b) {
-  return Array.isArray(a) &&
-    Array.isArray(b) &&
-    a.length === b.length &&
-    a.every((val, index) => val === b[index])
-}
-
-function isValidMove (validMoves, m) {
-  if (!Array.isArray(validMoves)) {
-    throw new Error('validMoves must be an array')
+function positionIsInArray (arr, position) {
+  if (!Array.isArray(position) || !Array.isArray(arr)) {
+    throw new Error('arr and position must be arrays')
   }
-  if (!Array.isArray(m)) {
-    throw new Error('m must be an array')
-  }
-
-  return validMoves.some(ar => (arrayEquals(ar[0], m[0]) && arrayEquals(ar[1], m[1])))
+  return arr.some(ar => arrayEquals(ar, position))
 }
 
 function getAllValidMoves (state) {
-  const result = []
+  const result = {}
   const startPositions = getAllOwnPositions(state)
   for (const startPos of startPositions) {
-    result.push(...getValidMovesFor(state, startPos))
+    result[startPos.toString()] = getValidTargetsForStateAndStartPos(state, startPos)
   }
   return result
 }
 
 function getAllOwnPositions (state) {
-  const positions = []
+  const positions = [] // [[6,0],[7,0],...]
   state.board.forEach((row, i) => (row.forEach((el, j) => {
     if (el === state.playerTurn) {
       positions.push([i, j])
@@ -174,21 +174,64 @@ function getAllOwnPositions (state) {
   return positions
 }
 
-function getValidMovesFor (state, startPos) {
+function getValidTargetsForStateAndStartPos (state, startPos) {
   // TODO: calculate valid moves
-  const result = [[[6, 0], [4, 2]], [[4, 0], [4, 1]]]
-  return result
+  // start must be own piece for the player who's turn it is
+  if (!positionIsInArray(getAllOwnPositions(state), startPos)) {
+    throw new Error('invalid move')
+  }
+  const walks = []
+  const jumps = []
+  // can walk if didn't jump yet
+  if (!state.endTurnAllowed) {
+    // add walk moves
+    // It has to be an empty cell around startPos
+    for (let i = -1; i <= 1; i++) {
+      for (let j = -1; j <= 1; j++) {
+        const targetRow = startPos[0] + i
+        const targetCol = startPos[1] + j
+        if (targetRow >= 0 && targetRow < state.board.length && targetCol >= 0 && targetCol < state.board[0].length && state.board[targetRow][targetCol] === 0) {
+          walks.push([targetRow, targetCol])
+        }
+      }
+    }
+  }
+
+  // jumps
+  for (let i = -2; i <= 2; i += 2) {
+    for (let j = -2; j <= 2; j += 2) {
+      const targetRow = startPos[0] + i
+      const targetCol = startPos[1] + j
+      if (targetRow >= 0 &&
+          targetRow < state.board.length &&
+          targetCol >= 0 &&
+          targetCol < state.board[0].length &&
+          state.board[targetRow][targetCol] === 0 &&
+          state.board[(targetRow + startPos[0]) / 2][(targetCol + startPos[1]) / 2] !== 0
+      ) {
+        // TODO: dont allow chain jumping with a different piece
+        jumps.push([targetRow, targetCol])
+      }
+    }
+  }
+
+  // console.log('allowedMoves for ', startPos, walks, jumps)
+  return {
+    walks,
+    jumps
+  }
 }
 
-function isValidMoveFor (state, startPos, m) {
-  return isValidMove(getValidMovesFor(state, startPos), m)
+function isValidMoveForState (state, m) {
+  const targets = getValidTargetsForStateAndStartPos(state, m[0])
+  return (positionIsInArray(targets.walks, m[1]) || positionIsInArray(targets.jumps, m[1]))
 }
 
 // TODO: check for winning positions
 function checkWin (state) {
   return false
 }
-
+// ========================END TURN=============================
 // Get next state: end turn
 function endTurn (state) {
   // checks for valid input data format
@@ -227,5 +270,6 @@ function endTurn (state) {
   // newState.actionsHistory.push(newState.message)
   return newState
 }
+// ===============================================================================
 
-export { endTurnAction, moveAction, gameBrain, createInitState, move, endTurn, START_BOARD, getAllValidMoves, isValidMove, getValidMovesFor, isValidMoveFor }
+export { endTurnAction, moveAction, gameBrain, createInitState, move, endTurn, START_BOARD, positionIsInArray, getValidTargetsForStateAndStartPos }

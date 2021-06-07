@@ -1,6 +1,6 @@
 // import logo from './logo.svg'
 import './App.css'
-import { moveAction, endTurnAction, gameBrain, createInitState, getValidMovesFor, isValidMoveFor, isValidMove } from './Game'
+import { moveAction, endTurnAction, gameBrain, createInitState, getValidTargetsForStateAndStartPos, positionIsInArray } from './Game'
 import { useState, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import DisplayState from './DisplayState'
@@ -47,6 +47,7 @@ const useStyles = createUseStyles({
 })
 
 // TODO: Display game over message and restart game button
+// TODO: dont allow to select a different piece when chain jumping, unless returned to the same spot, then make endTurn allowed false to start the turn from scratch and eraze jumps from history
 function App () {
   const classes = useStyles()
 
@@ -64,9 +65,10 @@ function App () {
 
   const [selectedCell, setSelectedCell] = useState()
   const [game, dispatch] = useReducer(gameBrain, createInitState(icons))
-  const [validMoves, setValidMoves] = useState([])
+  const [validWalks, setValidWalks] = useState([])
+  const [validJumps, setValidJumps] = useState([])
 
-  const move = (startPos, targetPos) => dispatch(moveAction(startPos, targetPos))
+  const move = (startPos, targetPos, isWalk) => dispatch(moveAction(startPos, targetPos, isWalk))
   const endTurn = () => dispatch(endTurnAction())
 
   const handleSelectCell = (rowIndex, columnIndex, x) => {
@@ -74,16 +76,29 @@ function App () {
     if (selectedCell) {
       // deselect selected cell
       if (selectedCell[0] === rowIndex && selectedCell[1] === columnIndex) {
-        setSelectedCell(null)
+        setSelectedCell(undefined)
+        setValidWalks([])
+        setValidJumps([])
       } else if (x === game.playerTurn) {
         // Select another piece of the same player
         setSelectedCell([rowIndex, columnIndex])
+        const validTargets = getValidTargetsForStateAndStartPos(game, [rowIndex, columnIndex])
+        setValidWalks(validTargets.walks)
+        setValidJumps(validTargets.jumps)
       } else if (x === 0) {
       // make a move
-        if (isValidMoveFor(game, selectedCell, [selectedCell, [rowIndex, columnIndex]])) {
-          move(selectedCell, [rowIndex, columnIndex])
+        if (positionIsInArray(validWalks, [rowIndex, columnIndex])) {
+          move(selectedCell, [rowIndex, columnIndex], true)
           // deselect
-          setSelectedCell(null)
+          setSelectedCell(undefined)
+          setValidWalks([])
+          setValidJumps([])
+        } else if (positionIsInArray(validJumps, [rowIndex, columnIndex])) {
+          move(selectedCell, [rowIndex, columnIndex], false)
+          // deselect
+          setSelectedCell(undefined)
+          setValidWalks([])
+          setValidJumps([])
         }
       } else {
       // ignore
@@ -92,7 +107,9 @@ function App () {
     // if there is no active selection
     } else if (x === game.playerTurn) {
       setSelectedCell([rowIndex, columnIndex])
-      setValidMoves(getValidMovesFor(game, [rowIndex, columnIndex]))
+      const validTargets = getValidTargetsForStateAndStartPos(game, [rowIndex, columnIndex])
+      setValidWalks(validTargets.walks)
+      setValidJumps(validTargets.jumps)
     }
   }
 
@@ -106,7 +123,7 @@ function App () {
       <header className={classes.appHeader}>
         <div className={classes.gameHeader}>Game of Corners  🚧 🛠  Under Construction ⚙ 🚧</div>
         <div className={classes.gameContainer}>
-          <DisplayBoard board={game.board} handleSelectCell={handleSelectCell} selectedCell={selectedCell} icons={icons} isValidMove={isValidMove} validMoves={validMoves} />
+          <DisplayBoard board={game.board} handleSelectCell={handleSelectCell} selectedCell={selectedCell} icons={icons} positionIsInArray={positionIsInArray} validWalks={validWalks} validJumps={validJumps} />
           <div className={classes.gameColumn}>
             <DisplayState
               playerTurn={game.playerTurn}

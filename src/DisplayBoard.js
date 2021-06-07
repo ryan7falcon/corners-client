@@ -63,7 +63,7 @@ const useStyles = createUseStyles({
       }
     }
   },
-  validMoveCell: {
+  validTargetCell: {
     extend: 'cell',
     background: 'rgba(0,255,0,0.1)'
   }
@@ -71,7 +71,7 @@ const useStyles = createUseStyles({
 })
 // TODO: add row and column indecies (chessboard notation)
 // TODO: make icons non-selectable as text
-function DisplayBoard ({ board, handleSelectCell, selectedCell, icons, validMoves, isValidMove }) {
+function DisplayBoard ({ board, handleSelectCell, selectedCell, icons, validJumps, validWalks, positionIsInArray }) {
   const classes = useStyles()
   return (
     <div className={classes.boardContainer}>
@@ -88,10 +88,10 @@ function DisplayBoard ({ board, handleSelectCell, selectedCell, icons, validMove
                   columnIndex={columnIndex}
                   rowIndex={rowIndex}
                   key={[rowIndex, columnIndex]}
-                  selected={selectedCell && (selectedCell[0] === rowIndex) && (selectedCell[1] === columnIndex)}
+                  isSelected={!!selectedCell && (selectedCell[0] === rowIndex) && (selectedCell[1] === columnIndex)}
                   icons={icons}
-                  isValidMove={isValidMove(validMoves, [selectedCell, [rowIndex, columnIndex]])}
-                  validMoveClassName={classes.validMoveCell}
+                  isValidTarget={positionIsInArray(validJumps, [rowIndex, columnIndex]) || positionIsInArray(validWalks, [rowIndex, columnIndex])}
+                  validTargetClassName={classes.validTargetCell}
 
                 />))}
             </div>
@@ -102,9 +102,9 @@ function DisplayBoard ({ board, handleSelectCell, selectedCell, icons, validMove
   )
 }
 
-function Cell ({ x, className, selectedClassName, validMoveClassName, handleSelect, rowIndex, columnIndex, selected, icons, isValidMove }) {
+function Cell ({ x, className, selectedClassName, validTargetClassName, handleSelect, rowIndex, columnIndex, isSelected, icons, isValidTarget }) {
   return (
-    <div className={selected ? selectedClassName : isValidMove ? validMoveClassName : className} key={columnIndex} onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}>
+    <div className={isSelected ? selectedClassName : isValidTarget ? validTargetClassName : className} key={columnIndex} onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}>
       {(x === 1) ? icons[0] : (x === 2) ? icons[1] : ''}
     </div>
   )

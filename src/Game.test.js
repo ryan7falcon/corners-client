@@ -1,4 +1,4 @@
-import { move, endTurn, START_BOARD, isValidMove, createInitState, getValidMovesFor } from './Game'
+import { move, endTurn, START_BOARD, isValidMove, createInitState, getValidTargetsForStateAndStartPos } from './Game'
 
 /*
 beforeEach(()=>{
@@ -13,7 +13,7 @@ describe('Testing move', () => {
     const targetPos = []
 
     expect(() => {
-      move(state, startPos, targetPos)
+      move(state, startPos, targetPos, true)
     }).toThrow('State must be a non-empty object, starting position and target must not be empty')
   })
 
@@ -23,7 +23,7 @@ describe('Testing move', () => {
     const targetPos = []
 
     expect(() => {
-      move(state, startPos, targetPos)
+      move(state, startPos, targetPos, true)
     }).toThrow('startPos and targetPos must be arrays of two elements')
   })
 
@@ -33,7 +33,7 @@ describe('Testing move', () => {
     const targetPos = [2, 2]
 
     expect(() => {
-      move(state, startPos, targetPos)
+      move(state, startPos, targetPos, true)
     }).toThrow('state must have a "board" property that is a 2-dimentional array')
   })
 
@@ -43,7 +43,7 @@ describe('Testing move', () => {
     const targetPos = [2, 2]
 
     expect(() => {
-      move(state, startPos, targetPos)
+      move(state, startPos, targetPos, true)
     }).toThrow('state must have a "actionsHistory" property that is a 1-dimentional array')
   })
 
@@ -53,7 +53,7 @@ describe('Testing move', () => {
     const targetPos = [2, 2]
 
     expect(() => {
-      move(state, startPos, targetPos)
+      move(state, startPos, targetPos, true)
     }).toThrow('state must have a "board" property that is a 2-dimentional array')
   })
 
@@ -63,7 +63,7 @@ describe('Testing move', () => {
     const targetPos = [2, 2]
 
     expect(() => {
-      move(state, startPos, targetPos)
+      move(state, startPos, targetPos, true)
     }).toThrow('state must have an "icons" property that is a 1-dimentional array')
   })
 
@@ -72,7 +72,7 @@ describe('Testing move', () => {
     const startPos = [6, 0]
     const targetPos = [4, 2]
 
-    expect(move(state, startPos, targetPos)).toEqual(expect.objectContaining({
+    expect(move(state, startPos, targetPos, false)).toEqual(expect.objectContaining({
       board: [[0, 0, 0, 0, 2, 2, 2, 2],
         [0, 0, 0, 0, 0, 2, 2, 2],
         [0, 0, 0, 0, 0, 0, 2, 2],
@@ -89,7 +89,7 @@ describe('Testing move', () => {
     const startPos = [6, 0]
     const targetPos = [4, 2]
 
-    expect(() => move(state, startPos, targetPos)).toThrow('invalid move')
+    expect(() => move(state, startPos, targetPos, false)).toThrow('invalid move')
   })
 
   test('move: invalid - target not empty', () => {
@@ -97,7 +97,7 @@ describe('Testing move', () => {
     const startPos = [6, 0]
     const targetPos = [5, 1]
 
-    expect(() => move(state, startPos, targetPos)).toThrow('invalid move')
+    expect(() => move(state, startPos, targetPos, false)).toThrow('invalid move')
   })
 
   test('move: invalid - start is empty', () => {
@@ -105,7 +105,7 @@ describe('Testing move', () => {
     const startPos = [0, 0]
     const targetPos = [1, 1]
 
-    expect(() => move(state, startPos, targetPos)).toThrow('invalid move')
+    expect(() => move(state, startPos, targetPos, true)).toThrow('invalid move')
   })
 
   test('move: invalid - illigal move/jump', () => {
@@ -113,12 +113,12 @@ describe('Testing move', () => {
     let startPos = [6, 0]
     let targetPos = [4, 4]
 
-    expect(() => move(state, startPos, targetPos)).toThrow('invalid move')
+    expect(() => move(state, startPos, targetPos, false)).toThrow('invalid move')
 
     startPos = [6, 0]
     targetPos = [5, 2]
 
-    expect(() => move(state, startPos, targetPos)).toThrow('invalid move')
+    expect(() => move(state, startPos, targetPos, false)).toThrow('invalid move')
   })
 
   test('move: invalid - must continue to jump with the same piece', () => {
@@ -136,7 +136,7 @@ describe('Testing move', () => {
     const startPos = [7, 0]
     const targetPos = [5, 2]
 
-    expect(() => move(state, startPos, targetPos)).toThrow('invalid move')
+    expect(() => move(state, startPos, targetPos, false)).toThrow('invalid move')
   })
 
   test('move: invalid - cant walk after jumping', () => {
@@ -154,15 +154,15 @@ describe('Testing move', () => {
     const startPos = [4, 2]
     const targetPos = [4, 3]
 
-    expect(() => move(state, startPos, targetPos)).toThrow('invalid move')
+    expect(() => move(state, startPos, targetPos, true)).toThrow('invalid move')
   })
 
   test('move: walking must force end of turn', () => {
-    const state = { board: START_BOARD, endTurnAllowed: true, actionsHistory: [], icons: ['1', '2'], playerTurn: 1 }
+    const state = { board: START_BOARD, endTurnAllowed: false, actionsHistory: [], icons: ['1', '2'], playerTurn: 1 }
     const startPos = [4, 0]
     const targetPos = [4, 1]
 
-    expect(move(state, startPos, targetPos)).toEqual(expect.objectContaining({
+    expect(move(state, startPos, targetPos, true)).toEqual(expect.objectContaining({
       endTurnAllowed: false,
       playerTurn: 2
     }))
@@ -258,33 +258,84 @@ describe('Testing End Turn', () => {
   })
 })
 
-describe('Test Valid moves check', () => {
-  test('valid move', () => {
+describe('Testing getValidTargetsForStateAndStartPos', () => {
+  test('targets for wrong player or null', () => {
     const state = createInitState()
-    // jump
-    let m = [[6, 0], [4, 2]]
-    expect(isValidMove(getValidMovesFor(state, [6, 0]), m)).toBeTruthy()
 
-    // walk
-    m = [[4, 0], [4, 1]]
-    expect(isValidMove(getValidMovesFor(state, [4, 0]), m)).toBeTruthy()
+    expect(() =>
+      getValidTargetsForStateAndStartPos(state, [0, 0])
+    ).toThrow()
   })
-  test('invalid move', () => {
+
+  test('should not allow walks after jump', () => {
     const state = createInitState()
-    // invalid jump
-    let m = [[6, 0], [5, 2]]
-    expect(isValidMove(getValidMovesFor(state, [6, 0]), m)).toBeFalsy()
-
-    // invalid walk - wrong player
-    m = [[0, 4], [1, 4]]
-    expect(isValidMove(getValidMovesFor(state, [0, 4]), m)).toBeFalsy()
-
-    // invalid walk - start 0
-    m = [[0, 0], [1, 4]]
-    expect(isValidMove(getValidMovesFor(state, [0, 0]), m)).toBeFalsy()
-
-    // invalid walk - target non-0
-    m = [[6, 0], [6, 1]]
-    expect(isValidMove(getValidMovesFor(state, [6, 0]), m)).toBeFalsy()
+    state.board[6][0] = 0
+    state.board[4][2] = 1
+    state.endTurnAllowed = true
+    state.actionsHistory = [[[6, 0], [4, 2]]]
+    expect(
+      getValidTargetsForStateAndStartPos(state, [4, 2])
+    ).toEqual({ jumps: [[6, 0]], walks: [] })
   })
-})
+
+  // TODO: debug this
+  test('should allow jumps and walks in the beginning of the turn', () => {
+    const state = createInitState()
+    expect(
+      getValidTargetsForStateAndStartPos(state, [5, 0])
+    ).toEqual({ jumps: [[3, 0], [5, 2]], walks: [[4, 1]] })
+  })
+
+  test('must jump over pieces on empty space', () => {
+    const state = createInitState()
+    state.board = [[0, 0, 0, 0, 2, 2, 2, 2],
+      [0, 0, 0, 0, 0, 2, 2, 2],
+      [0, 0, 0, 0, 0, 0, 0, 2],
+      [0, 0, 0, 0, 0, 2, 2, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 0, 0, 0, 0]]
+    expect(
+      getValidTargetsForStateAndStartPos(state, [5, 2])
+    ).toEqual({ jumps: [[5, 4]], walks: [[4, 1], [4, 2], [4, 3], [6, 1], [6, 2], [6, 3]] })
+  })
+
+  test('must allow jumping after jumping with the same piece', () => {
+    const state = createInitState()
+    state.board = [
+      [0, 0, 0, 0, 2, 2, 2, 2],
+      [0, 0, 0, 0, 0, 2, 2, 2],
+      [0, 0, 0, 0, 0, 0, 0, 2],
+      [0, 0, 0, 0, 0, 2, 2, 0],
+      [1, 1, 1, 0, 0, 0, 0, 0],
+      [1, 1, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 0, 0, 0, 0]]
+    state.actionsHistory = [[6, 1], [4, 1]]
+    state.endTurnAllowed = true
+    expect(
+      getValidTargetsForStateAndStartPos(state, [4, 1])
+    ).toEqual({ jumps: [[4, 3], [6, 1]], walks: [] })
+  })
+
+  test('must not allow jumping after jumping with the different piece', () => {
+    const state = createInitState()
+    state.board = [
+      [0, 0, 0, 0, 2, 2, 2, 2],
+      [0, 0, 0, 0, 0, 2, 2, 2],
+      [0, 0, 0, 0, 0, 0, 0, 2],
+      [0, 0, 0, 0, 0, 2, 2, 0],
+      [1, 1, 0, 0, 0, 0, 0, 0],
+      [1, 1, 0, 0, 0, 0, 0, 0],
+      [1, 0, 1, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 0, 0, 0, 0]]
+    state.actionsHistory = [[6, 1], [4, 1]]
+    state.endTurnAllowed = true
+    expect(
+      getValidTargetsForStateAndStartPos(state, [5, 1])
+    ).toEqual({ jumps: [], walks: [] })
+  })
+}
+
+)
