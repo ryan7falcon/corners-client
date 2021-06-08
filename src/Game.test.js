@@ -1,4 +1,4 @@
-import { move, endTurn, START_BOARD, isValidMove, createInitState, getValidTargetsForStateAndStartPos } from './Game'
+import { move, endTurn, createInitState, getValidTargetsForStateAndStartPos } from './Game'
 
 /*
 beforeEach(()=>{
@@ -28,7 +28,8 @@ describe('Testing move', () => {
   })
 
   test('move with state without a board', () => {
-    const state = { a: 1 }
+    const state = createInitState()
+    state.board = null
     const startPos = [1, 2]
     const targetPos = [2, 2]
 
@@ -38,7 +39,8 @@ describe('Testing move', () => {
   })
 
   test('move with state without actionsHistory', () => {
-    const state = { board: START_BOARD }
+    const state = createInitState()
+    state.actionsHistory = null
     const startPos = [1, 2]
     const targetPos = [2, 2]
 
@@ -48,7 +50,8 @@ describe('Testing move', () => {
   })
 
   test('move with state with an improper board', () => {
-    const state = { board: [1, 2, 3], actionsHistory: [] }
+    const state = createInitState()
+    state.board = [1, 2, 3]
     const startPos = [1, 2]
     const targetPos = [2, 2]
 
@@ -58,7 +61,8 @@ describe('Testing move', () => {
   })
 
   test('move without icons', () => {
-    const state = { board: START_BOARD, actionsHistory: [] }
+    const state = createInitState()
+    state.icons = null
     const startPos = [1, 2]
     const targetPos = [2, 2]
 
@@ -68,7 +72,7 @@ describe('Testing move', () => {
   })
 
   test('move: valid', () => {
-    const state = { board: START_BOARD, actionsHistory: [], icons: ['1', '2'], playerTurn: 1 }
+    const state = createInitState()
     const startPos = [6, 0]
     const targetPos = [4, 2]
 
@@ -85,7 +89,8 @@ describe('Testing move', () => {
   })
 
   test('move: invalid - wrong player', () => {
-    const state = { board: START_BOARD, actionsHistory: [], icons: ['1', '2'], playerTurn: 2 }
+    const state = createInitState()
+    state.playerTurn = 2
     const startPos = [6, 0]
     const targetPos = [4, 2]
 
@@ -93,7 +98,7 @@ describe('Testing move', () => {
   })
 
   test('move: invalid - target not empty', () => {
-    const state = { board: START_BOARD, actionsHistory: [], icons: ['1', '2'], playerTurn: 1 }
+    const state = createInitState()
     const startPos = [6, 0]
     const targetPos = [5, 1]
 
@@ -101,7 +106,7 @@ describe('Testing move', () => {
   })
 
   test('move: invalid - start is empty', () => {
-    const state = { board: START_BOARD, actionsHistory: [], icons: ['1', '2'], playerTurn: 1 }
+    const state = createInitState()
     const startPos = [0, 0]
     const targetPos = [1, 1]
 
@@ -109,7 +114,7 @@ describe('Testing move', () => {
   })
 
   test('move: invalid - illigal move/jump', () => {
-    const state = { board: START_BOARD, actionsHistory: [], icons: ['1', '2'], playerTurn: 1 }
+    const state = createInitState()
     let startPos = [6, 0]
     let targetPos = [4, 4]
 
@@ -158,7 +163,7 @@ describe('Testing move', () => {
   })
 
   test('move: walking must force end of turn', () => {
-    const state = { board: START_BOARD, endTurnAllowed: false, actionsHistory: [], icons: ['1', '2'], playerTurn: 1 }
+    const state = createInitState()
     const startPos = [4, 0]
     const targetPos = [4, 1]
 
@@ -188,7 +193,8 @@ describe('Testing End Turn', () => {
   })
 
   test('End Turn with state without actionsHistory', () => {
-    const state = { board: START_BOARD }
+    const state = createInitState()
+    state.actionsHistory = null
 
     expect(() => {
       endTurn(state)
@@ -196,20 +202,22 @@ describe('Testing End Turn', () => {
   })
 
   test('End Turn without icons', () => {
-    const state = { endTurnAllowed: false, playerTurn: 1, board: START_BOARD, actionsHistory: [] }
+    const state = createInitState()
+    state.icons = null
     expect(() => {
       endTurn(state)
     }).toThrow('state must have an "icons" property that is a 1-dimentional array')
   })
 
   test('End Turn with endTurnAllowed: false', () => {
-    const state = { endTurnAllowed: false, playerTurn: 1, board: START_BOARD, actionsHistory: [], icons: ['1', '2'] }
+    const state = createInitState()
 
     expect(() => endTurn(state)).toThrow('End Turn is not allowed')
   })
 
   test('End Turn with endTurnAllowed: true', () => {
-    const state = { endTurnAllowed: true, playerTurn: 1, board: START_BOARD, actionsHistory: [], icons: ['1', '2'] }
+    const state = createInitState()
+    state.endTurnAllowed = true
 
     expect(endTurn(state)).toEqual(expect.objectContaining({
       endTurnAllowed: false,
@@ -269,8 +277,16 @@ describe('Testing getValidTargetsForStateAndStartPos', () => {
 
   test('should not allow walks after jump', () => {
     const state = createInitState()
-    state.board[6][0] = 0
-    state.board[4][2] = 1
+    state.board = [
+      [0, 0, 0, 0, 2, 2, 2, 2],
+      [0, 0, 0, 0, 0, 2, 2, 2],
+      [0, 0, 0, 0, 0, 0, 2, 2],
+      [0, 0, 0, 0, 0, 0, 0, 2],
+      [1, 0, 1, 0, 0, 0, 0, 0],
+      [1, 1, 0, 0, 0, 0, 0, 0],
+      [0, 1, 1, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 0, 0, 0, 0]
+    ]
     state.endTurnAllowed = true
     state.actionsHistory = [[[6, 0], [4, 2]]]
     expect(
@@ -278,7 +294,6 @@ describe('Testing getValidTargetsForStateAndStartPos', () => {
     ).toEqual({ jumps: [[6, 0]], walks: [] })
   })
 
-  // TODO: debug this
   test('should allow jumps and walks in the beginning of the turn', () => {
     const state = createInitState()
     expect(
@@ -312,7 +327,7 @@ describe('Testing getValidTargetsForStateAndStartPos', () => {
       [1, 1, 0, 0, 0, 0, 0, 0],
       [1, 0, 0, 0, 0, 0, 0, 0],
       [1, 1, 1, 1, 0, 0, 0, 0]]
-    state.actionsHistory = [[6, 1], [4, 1]]
+    state.actionsHistory = [[[6, 1], [4, 1]]]
     state.endTurnAllowed = true
     expect(
       getValidTargetsForStateAndStartPos(state, [4, 1])

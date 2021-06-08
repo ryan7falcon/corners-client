@@ -8,6 +8,7 @@
            "javascript": "javascriptreact"
         },
         "javascript.validate.enable": false,
-        "standard.autoFixOnSave": true
+        "standard.autoFixOnSave": true,
+        "jest.jestCommandLine": "npm test --"
      
 }

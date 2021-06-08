@@ -48,6 +48,7 @@ const useStyles = createUseStyles({
 
 // TODO: Display game over message and restart game button
 // TODO: dont allow to select a different piece when chain jumping, unless returned to the same spot, then make endTurn allowed false to start the turn from scratch and eraze jumps from history
+// TODO: deselect opponents piece after end of turn
 function App () {
   const classes = useStyles()
 
