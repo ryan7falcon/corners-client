@@ -190,7 +190,6 @@ function getValidTargetsForStateAndStartPos (state, startPos) {
           state.board[targetRow][targetCol] === 0 &&
           state.board[(targetRow + startPos[0]) / 2][(targetCol + startPos[1]) / 2] !== 0
       ) {
-        // TODO: dont allow chain jumping with a different piece
         if (state.endTurnAllowed) {
           // previous target is the only one allowed to be the start
           if (arrayEquals(state.actionsHistory[state.actionsHistory.length - 1][1], startPos)) {
@@ -238,7 +237,23 @@ function checkWin (state) {
     [2, 2, 2, 0, 0, 0, 0, 0],
     [2, 2, 2, 2, 0, 0, 0, 0]
   ]
-  return false
+
+  const WIN_MASK = [ONE_WIN_MASK, TWO_WIN_MASK]
+
+  function checkPlayer (player) {
+    for (const [i, row] of state.board.entries()) {
+      for (const [j, el] of row.entries()) {
+        if (el === player) {
+          if (el !== WIN_MASK[player - 1][i][j]) {
+            return false
+          }
+        }
+      }
+    }
+    return true
+  }
+
+  return checkPlayer(1) || checkPlayer(2)
 }
 // ========================END TURN=============================
 // Get next state: end turn
