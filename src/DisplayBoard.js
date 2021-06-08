@@ -104,7 +104,7 @@ function DisplayBoard ({ board, handleSelectCell, selectedCell, icons, validJump
 
 function Cell ({ x, className, selectedClassName, validTargetClassName, handleSelect, rowIndex, columnIndex, isSelected, icons, isValidTarget }) {
   return (
-    <div className={isSelected ? selectedClassName : isValidTarget ? validTargetClassName : className} key={columnIndex} onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}>
+    <div data-testid={`cell-${rowIndex}-${columnIndex}`} className={isSelected ? selectedClassName : isValidTarget ? validTargetClassName : className} key={columnIndex} onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}>
       {(x === 1) ? icons[0] : (x === 2) ? icons[1] : ''}
     </div>
   )

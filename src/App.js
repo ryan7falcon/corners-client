@@ -1,7 +1,7 @@
 // import logo from './logo.svg'
 import './App.css'
 import { moveAction, endTurnAction, gameBrain, createInitState, getValidTargetsForStateAndStartPos, positionIsInArray } from './Game'
-import { useState, useReducer } from 'react'
+import { useState, useReducer, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import DisplayState from './DisplayState'
 import DisplayBoard from './DisplayBoard'
@@ -48,7 +48,7 @@ const useStyles = createUseStyles({
 
 // TODO: Display game over message and restart game button
 // TODO: dont allow to select a different piece when chain jumping, unless returned to the same spot, then make endTurn allowed false to start the turn from scratch and eraze jumps from history
-// TODO: deselect opponents piece after end of turn
+// TODO: after game over allow only one player to make turns and count them to get the score
 function App () {
   const classes = useStyles()
 
@@ -72,34 +72,36 @@ function App () {
   const move = (startPos, targetPos, isWalk) => dispatch(moveAction(startPos, targetPos, isWalk))
   const endTurn = () => dispatch(endTurnAction())
 
+  useEffect(() => {
+    if (selectedCell) {
+      const validTargets = getValidTargetsForStateAndStartPos(game, selectedCell)
+      setValidWalks(validTargets.walks)
+      setValidJumps(validTargets.jumps)
+    } else {
+      setValidWalks([])
+      setValidJumps([])
+    }
+  }, [selectedCell])
+
   const handleSelectCell = (rowIndex, columnIndex, x) => {
     // if there is an active selection
     if (selectedCell) {
       // deselect selected cell
-      if (selectedCell[0] === rowIndex && selectedCell[1] === columnIndex) {
+      if (selectedCell[0] === rowIndex && selectedCell[1] === columnIndex && !game.endTurnAllowed) {
         setSelectedCell(undefined)
-        setValidWalks([])
-        setValidJumps([])
-      } else if (x === game.playerTurn) {
+      } else if (x === game.playerTurn && !game.endTurnAllowed) {
         // Select another piece of the same player
         setSelectedCell([rowIndex, columnIndex])
-        const validTargets = getValidTargetsForStateAndStartPos(game, [rowIndex, columnIndex])
-        setValidWalks(validTargets.walks)
-        setValidJumps(validTargets.jumps)
       } else if (x === 0) {
       // make a move
         if (positionIsInArray(validWalks, [rowIndex, columnIndex])) {
           move(selectedCell, [rowIndex, columnIndex], true)
           // deselect
           setSelectedCell(undefined)
-          setValidWalks([])
-          setValidJumps([])
         } else if (positionIsInArray(validJumps, [rowIndex, columnIndex])) {
           move(selectedCell, [rowIndex, columnIndex], false)
           // deselect
-          setSelectedCell(undefined)
-          setValidWalks([])
-          setValidJumps([])
+          setSelectedCell([rowIndex, columnIndex])
         }
       } else {
       // ignore
@@ -108,17 +110,15 @@ function App () {
     // if there is no active selection
     } else if (x === game.playerTurn) {
       setSelectedCell([rowIndex, columnIndex])
-      const validTargets = getValidTargetsForStateAndStartPos(game, [rowIndex, columnIndex])
-      setValidWalks(validTargets.walks)
-      setValidJumps(validTargets.jumps)
     }
   }
 
   const handleEndTurn = () => {
     endTurn()
+    setSelectedCell(undefined)
   }
 
-  console.log(game.message, game)
+  // console.log(game.message, game)
   return (
     <div className={classes.app}>
       <header className={classes.appHeader}>
