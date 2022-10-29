@@ -1,5 +1,5 @@
 import { createUseStyles } from 'react-jss'
-
+import { positionIsInArray } from './util'
 const useStyles = createUseStyles({
   boardContainer: {
     display: 'flex',
@@ -71,13 +71,13 @@ const useStyles = createUseStyles({
 })
 // TODO: add row and column indecies (chessboard notation)
 // TODO: make icons non-selectable as text
-function DisplayBoard ({ board, handleSelectCell, selectedCell, icons, validJumps, validWalks, positionIsInArray }) {
+function DisplayBoard ({ state, handleSelectCell, icons }) {
   const classes = useStyles()
   return (
     <div className={classes.boardContainer}>
       <div className={classes.board}>
         {
-          board.map((row, rowIndex) => (
+          state.board.map((row, rowIndex) => (
             <div className={classes.row} key={rowIndex}>
               {row.map((x, columnIndex) => (
                 <Cell
@@ -88,9 +88,9 @@ function DisplayBoard ({ board, handleSelectCell, selectedCell, icons, validJump
                   columnIndex={columnIndex}
                   rowIndex={rowIndex}
                   key={[rowIndex, columnIndex]}
-                  isSelected={!!selectedCell && (selectedCell[0] === rowIndex) && (selectedCell[1] === columnIndex)}
+                  isSelected={!!state.selectedCell && (state.selectedCell[0] === rowIndex) && (state.selectedCell[1] === columnIndex)}
                   icons={icons}
-                  isValidTarget={positionIsInArray(validJumps, [rowIndex, columnIndex]) || positionIsInArray(validWalks, [rowIndex, columnIndex])}
+                  isValidTarget={positionIsInArray(state.validTargets.jumps, [rowIndex, columnIndex]) || positionIsInArray(state.validTargets.walks, [rowIndex, columnIndex])}
                   validTargetClassName={classes.validTargetCell}
 
                 />))}
