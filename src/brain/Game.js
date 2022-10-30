@@ -59,7 +59,13 @@ function endTurnAction () {
   }
 }
 
-function selectCellAction (target) {
+function selectCellAction ({
+  rowIndex, columnIndex, piece
+}) {
+  const target = {
+    position: [rowIndex, columnIndex],
+    piece
+  }
   return {
     type: actions.selectCell,
     payload: {
