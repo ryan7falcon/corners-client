@@ -1,5 +1,6 @@
 import { createUseStyles } from 'react-jss'
 import { positionIsInArray } from '../util'
+import { isValidWalk, isValidJump } from '../brain/checks'
 const useStyles = createUseStyles({
   boardContainer: {
     display: 'flex',
@@ -71,7 +72,7 @@ const useStyles = createUseStyles({
 })
 // TODO: add row and column indecies (chessboard notation)
 // TODO: make icons non-selectable as text
-function DisplayBoard ({ state, handleSelectCell, icons }) {
+function DisplayBoard({ state, handleSelectCell, icons }) {
   const classes = useStyles()
   return (
     <div className={classes.boardContainer}>
@@ -79,8 +80,12 @@ function DisplayBoard ({ state, handleSelectCell, icons }) {
         {
           state.board.map((row, rowIndex) => (
             <div className={classes.row} key={rowIndex}>
-              {row.map((x, columnIndex) => (
-                <Cell
+              {row.map((x, columnIndex) => {
+                const target = {
+                  position: [rowIndex, columnIndex],
+                  piece: x
+                }
+                return <Cell
                   className={classes.cell}
                   selectedClassName={classes.selectedCell}
                   handleSelect={handleSelectCell}
@@ -90,19 +95,20 @@ function DisplayBoard ({ state, handleSelectCell, icons }) {
                   key={[rowIndex, columnIndex]}
                   isSelected={!!state.selectedCell && (state.selectedCell[0] === rowIndex) && (state.selectedCell[1] === columnIndex)}
                   icons={icons}
-                  isValidTarget={positionIsInArray(state.validTargets.jumps, [rowIndex, columnIndex]) || positionIsInArray(state.validTargets.walks, [rowIndex, columnIndex])}
+                  isValidTarget={isValidWalk(state, target) || isValidJump(state, target)}
                   validTargetClassName={classes.validTargetCell}
 
-                />))}
+                />
+              })}
             </div>
           ))
-          }
+        }
       </div>
     </div>
   )
 }
 
-function Cell ({ x, className, selectedClassName, validTargetClassName, handleSelect, rowIndex, columnIndex, isSelected, icons, isValidTarget }) {
+function Cell({ x, className, selectedClassName, validTargetClassName, handleSelect, rowIndex, columnIndex, isSelected, icons, isValidTarget }) {
   return (
     <div data-testid={`cell-${rowIndex}-${columnIndex}`} className={isSelected ? selectedClassName : isValidTarget ? validTargetClassName : className} key={columnIndex} onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}>
       {(x === 1) ? icons[0] : (x === 2) ? icons[1] : ''}
