@@ -1,6 +1,6 @@
 import  { isObject } from './util'
-import { deselect, updateValidTargets } from './selectCell'
-
+import { updateValidTargets } from './selectCell'
+import { deselect } from './handlers'
 // TODO: check for winning positions
 function checkWin (state) {
   const ONE_WIN_MASK = [

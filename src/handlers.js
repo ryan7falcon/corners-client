@@ -1,6 +1,14 @@
 import { move } from './move'
 import { positionIsInArray } from './util'
 
+
+function deselect (state) {
+  return {
+    ...state,
+    selectedCell: undefined
+  }
+}
+
 // Check if allowed to deselct
 const allowedToDeselect = (state, rowIndex, columnIndex) => {
   const selectedCell = state.selectedCell
@@ -39,8 +47,6 @@ const maybeMakeAMove = (state, target) => {
 }
 
 const handleSelection = (state, target) => {
- 
-
   if (state.selectedCell) {
     // deselect selected cell
     if (allowedToDeselect(state, target.rowIndex, target.columnIndex)) {
@@ -68,4 +74,4 @@ const handleSelection = (state, target) => {
   return state
 }
 
-export { handleSelection }
+export {  deselect, handleSelection }

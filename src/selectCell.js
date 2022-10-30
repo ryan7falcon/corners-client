@@ -1,13 +1,6 @@
 import { getValidTargetsForStateAndStartPos } from './move'
 import { handleSelection } from './handlers' 
 
-function deselect (state) {
-  return {
-    ...state,
-    selectedCell: undefined
-  }
-}
-
 function updateValidTargets(state) {
   if (state.selectedCell) {
     const validTargets = getValidTargetsForStateAndStartPos(state, state.selectedCell)
@@ -30,4 +23,4 @@ function selectCell (state, target) {
   return updateValidTargets(handleSelection(state, target))
 } 
 
-export { selectCell, deselect, updateValidTargets }
+export { selectCell, updateValidTargets }
