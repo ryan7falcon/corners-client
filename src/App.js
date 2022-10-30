@@ -1,5 +1,3 @@
-// import logo from './logo.svg'
-
 import { useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 
