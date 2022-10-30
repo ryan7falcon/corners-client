@@ -1,5 +1,5 @@
 import { createUseStyles } from 'react-jss'
-import { positionIsInArray } from './util'
+import { positionIsInArray } from '../util'
 const useStyles = createUseStyles({
   boardContainer: {
     display: 'flex',

@@ -3,11 +3,11 @@
 import { useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 
-import { endTurnAction, selectCellAction, gameBrain, createInitState } from './Game'
+import { endTurnAction, selectCellAction, gameBrain, createInitState } from './brain/Game'
 
-import DisplayState from './DisplayState'
-import DisplayBoard from './DisplayBoard'
-import { EndTurnBtn } from './Buttons'
+import DisplayState from './display/DisplayState'
+import DisplayBoard from './display/DisplayBoard'
+import { EndTurnBtn } from './display/Buttons'
 import './App.css'
 
 const useStyles = createUseStyles({

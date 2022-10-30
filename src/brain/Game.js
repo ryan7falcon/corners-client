@@ -1,6 +1,6 @@
-import { move } from './move'
-import { endTurn } from './endTurn'
-import { selectCell } from './selectCell'
+import { move } from './nextState/move'
+import { endTurn } from './nextState/endTurn'
+import { selectCell } from './nextState/selectCell'
 
 const createInitState = (icons = ['💩', '💎']) => {
   const START_BOARD = [

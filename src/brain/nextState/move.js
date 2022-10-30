@@ -1,5 +1,5 @@
 import { endTurn } from './endTurn'
-import  { arrayEquals, isObject, positionIsInArray } from './util'
+import  { arrayEquals, isObject, positionIsInArray } from '../../util'
 
 function getAllOwnPositions (state) {
   const positions = [] // [[6,0],[7,0],...]

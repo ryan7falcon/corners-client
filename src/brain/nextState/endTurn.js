@@ -1,4 +1,4 @@
-import  { isObject } from './util'
+import  { isObject } from '../../util'
 import { updateValidTargets } from './selectCell'
 import { deselect } from './handlers'
 // TODO: check for winning positions

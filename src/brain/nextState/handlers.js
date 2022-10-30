@@ -1,5 +1,5 @@
 import { move } from './move'
-import { positionIsInArray } from './util'
+import { positionIsInArray } from '../../util'
 
 
 function deselect (state) {
