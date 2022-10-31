@@ -1,7 +1,6 @@
 import { deselect } from './selectCell'
 import { validateState } from '../validateStateAndTarget'
 
-// TODO: check for winning positions
 function checkWin(state) {
   const ONE_WIN_MASK = [
     [0, 0, 0, 0, 1, 1, 1, 1],
@@ -63,7 +62,6 @@ function endTurn(state) {
   } else {
     throw new Error('End Turn is not allowed')
   }
-  // newState.actionsHistory.push(newState.message)
   return deselect(newState)
 }
 
