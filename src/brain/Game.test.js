@@ -1,11 +1,6 @@
 import { gameBrain, createInitState, moveAction, selectCellAction, endTurnAction } from './Game'
 
-/*
-beforeEach(()=>{
-
-})
-*/
-// =============== MOVE =================
+// =============== SELECT CELL =================
 describe('selectCellAction', () => {
 
   test('move: valid', () => {
