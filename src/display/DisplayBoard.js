@@ -1,5 +1,5 @@
 import { createUseStyles } from 'react-jss'
-import { positionIsInArray } from '../util'
+import { positionIsInArray, arrayEquals } from '../util'
 import { isValidWalk, isValidJump } from '../brain/checks'
 const useStyles = createUseStyles({
   boardContainer: {
@@ -93,7 +93,7 @@ function DisplayBoard({ state, handleSelectCell, icons }) {
                   columnIndex={columnIndex}
                   rowIndex={rowIndex}
                   key={[rowIndex, columnIndex]}
-                  isSelected={!!state.selectedCell && (state.selectedCell[0] === rowIndex) && (state.selectedCell[1] === columnIndex)}
+                  isSelected={!!state.selectedCell && (arrayEquals(state.selectedCell.position, [rowIndex, columnIndex]))}
                   icons={icons}
                   isValidTarget={isValidWalk(state, target) || isValidJump(state, target)}
                   validTargetClassName={classes.validTargetCell}

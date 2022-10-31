@@ -1,5 +1,5 @@
 import { arrayEquals } from '../../util'
-import { isTargetEmpty, isOwnTarget, hasntJumpedYet, isTargetValid } from '../checks'
+import { hasntJumpedYet } from '../checks'
 
 
 function getValidWalks(state) {

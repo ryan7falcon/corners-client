@@ -1,4 +1,3 @@
-import { isObject } from '../../util'
 import { deselect } from './selectCell'
 import { validateState } from '../validateStateAndTarget'
 

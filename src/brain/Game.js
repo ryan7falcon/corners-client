@@ -24,8 +24,8 @@ const createInitState = (icons = ['💩', '💎']) => {
     message: `Player ${icons[0]} turn`,
     selectedCell: undefined,
     validTargets: {
-      walks: [],
-      jumps: []
+      walks: {},
+      jumps: {}
     }
   }
 }
@@ -37,7 +37,7 @@ const actions = {
 }
 
 // actions
-function moveAction (startPos, targetPos, isWalk) {
+function moveAction(startPos, targetPos, isWalk) {
   return {
     // move action
     type: actions.move,
@@ -51,7 +51,7 @@ function moveAction (startPos, targetPos, isWalk) {
   }
 }
 
-function endTurnAction () {
+function endTurnAction() {
   return {
     // end turn action
     type: actions.endTurn,
@@ -59,7 +59,7 @@ function endTurnAction () {
   }
 }
 
-function selectCellAction ({
+function selectCellAction({
   rowIndex, columnIndex, piece
 }) {
   const target = {
@@ -75,7 +75,7 @@ function selectCellAction ({
 }
 
 // reducer
-function gameBrain (state, action) {
+function gameBrain(state, action) {
   switch (action.type) {
     // MOVE
     case actions.move: {
