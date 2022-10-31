@@ -2,6 +2,14 @@ import { arrayEquals } from '../../util'
 import { hasntJumpedYet } from '../checks'
 
 
+const isSafeIndex = (len) => (i) => {
+  return i >= 0 && i < len
+}
+
+const getIndexArrBuilder = (step) => (start, len) => {
+  return [start - step, start, start + step].filter(isSafeIndex(len))
+}
+
 function getValidWalks(state) {
   const walks = {}
   if (!state.selectedCell) { return walks }
@@ -11,18 +19,23 @@ function getValidWalks(state) {
   if (hasntJumpedYet(state)) {
     // add walk moves
     // It has to be an empty cell around startPos
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        const targetRow = startPos[0] + i
-        const targetCol = startPos[1] + j
-        if (targetRow >= 0 && targetRow < state.board.length && targetCol >= 0 && targetCol < state.board[0].length && state.board[targetRow][targetCol] === 0) {
-          walks[targetRow] ? walks[targetRow].push(targetCol) : walks[targetRow] = [targetCol]
+    const getIndexArr = getIndexArrBuilder(1)
+    const rowsIs = getIndexArr(startPos[0], state.board.length)
+    const colsIs = getIndexArr(startPos[1], state.board[0].length)
+
+
+    rowsIs.forEach(r => {
+      colsIs.forEach(c => {
+        if (state.board[r][c] === 0) {
+          walks[r] ? walks[r].push(c) : walks[r] = [c]
         }
-      }
-    }
+      })
+    })
   }
   return walks
 }
+
+const jumpingOverIndex = (startIndex, targetIndex) => { return ((targetIndex + startIndex) / 2) }
 
 function getValidJumps(state) {
   const jumps = {}
@@ -30,28 +43,29 @@ function getValidJumps(state) {
 
   const startPos = state.selectedCell.position
 
-  for (let i = -2; i <= 2; i += 2) {
-    for (let j = -2; j <= 2; j += 2) {
-      const targetRow = startPos[0] + i
-      const targetCol = startPos[1] + j
-      if (targetRow >= 0 &&
-        targetRow < state.board.length &&
-        targetCol >= 0 &&
-        targetCol < state.board[0].length &&
-        state.board[targetRow][targetCol] === 0 &&
-        state.board[(targetRow + startPos[0]) / 2][(targetCol + startPos[1]) / 2] !== 0
+  const getIndexArr = getIndexArrBuilder(2)
+  const rowsIs = getIndexArr(startPos[0], state.board.length)
+  const colsIs = getIndexArr(startPos[1], state.board[0].length)
+
+
+  rowsIs.forEach(r => {
+    colsIs.forEach(c => {
+
+      if (
+        state.board[r][c] === 0 &&
+        state.board[jumpingOverIndex(startPos[0], r)][jumpingOverIndex(startPos[1], c)] !== 0
       ) {
         if (state.endTurnAllowed) {
           // previous target is the only one allowed to be the start
           if (arrayEquals(state.actionsHistory[state.actionsHistory.length - 1][1], startPos)) {
-            jumps[targetRow] ? jumps[targetRow].push(targetCol) : jumps[targetRow] = [targetCol]
+            jumps[r] ? jumps[r].push(c) : jumps[r] = [c]
           }
         } else {
-          jumps[targetRow] ? jumps[targetRow].push(targetCol) : jumps[targetRow] = [targetCol]
+          jumps[r] ? jumps[r].push(c) : jumps[r] = [c]
         }
       }
-    }
-  }
+    })
+  })
   return jumps
 }
 
