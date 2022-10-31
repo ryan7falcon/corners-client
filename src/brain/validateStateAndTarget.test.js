@@ -56,4 +56,13 @@ describe('validateStartAndTargetPos', () => {
       validateStartAndTargetPos(startPos, targetPos)
     }).toThrow('startPos and targetPos must be arrays of two elements')
   })
+
+  test('empty target pos throws', () => {
+    const startPos = [1]
+    const targetPos = undefined
+
+    expect(() => {
+      validateStartAndTargetPos(startPos, targetPos)
+    }).toThrow('Starting position and target must not be empty')
+  })
 })

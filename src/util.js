@@ -9,11 +9,8 @@ const isObject = (obj) => {
   return Object.prototype.toString.call(obj) === '[object Object]'
 }
 
-function positionIsInArray(arr, position) {
-  if (!Array.isArray(position) || !Array.isArray(arr)) {
-    throw new Error('arr and position must be arrays')
-  }
-  return arr.some(ar => arrayEquals(ar, position))
-}
+const objHasProperty = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
 
-export { arrayEquals, isObject, positionIsInArray }
+const isArray = (a) => Array.isArray(a)
+
+export { arrayEquals, isObject, objHasProperty, isArray }

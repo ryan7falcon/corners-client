@@ -15,7 +15,6 @@ test('End turn buton is disabled at the start of the game', () => {
 test('Clicking on a cell updates valid moves', () => {
   render(<App />)
   fireEvent.click(screen.getByTestId('cell-6-0'))
-  console.log('cell6-0', screen.getByTestId('cell-6-0').className)
   expect(screen.getByTestId('cell-6-0').className).toContain('selectedCell')
   // wait until the `get` request promise resolves and
   // the component calls setState and re-renders.
