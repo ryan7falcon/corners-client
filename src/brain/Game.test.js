@@ -117,9 +117,9 @@ describe('Testing End Turn', () => {
 
     expect(gameBrain(state, endTurnAction())).toEqual(expect.objectContaining({
       endTurnAllowed: false,
-      playerTurn: 1,
+      playerTurn: 2,
       win: 1,
-      gameOver: true
+      winnerFinished: true
     }))
 
     board = [
@@ -136,9 +136,180 @@ describe('Testing End Turn', () => {
 
     expect(gameBrain(state, endTurnAction())).toEqual(expect.objectContaining({
       endTurnAllowed: false,
-      playerTurn: 2,
+      playerTurn: 1,
       win: 2,
-      gameOver: true
+      winnerFinished: true
+    }))
+  })
+
+  test('should switch turns after walk that results in game end to the player that lost and keep status game ove', () => {
+
+    const state = createInitState()
+    state.board = [
+      [0, 0, 0, 0, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 1],
+      [0, 0, 0, 0, 0, 0, 1, 1],
+      [2, 0, 0, 0, 0, 0, 0, 0],
+      [2, 2, 2, 0, 0, 0, 0, 0],
+      [2, 2, 0, 0, 0, 0, 0, 0],
+      [2, 2, 2, 2, 0, 0, 0, 0]
+    ]
+    state.actionsHistory = [[[6, 0], [4, 2]]]
+    const target1 = {
+      rowIndex: 3, columnIndex: 6, piece: 1
+    }
+    const selectedState = gameBrain(state, selectCellAction(target1))
+    const target2 = {
+      rowIndex: 2, columnIndex: 6, piece: 0
+    }
+
+    expect(gameBrain(selectedState, selectCellAction(target2))
+    ).toEqual(expect.objectContaining({
+      endTurnAllowed: false,
+      playerTurn: 2,
+      win: 1,
+      winnerFinished: true
+    }))
+  })
+
+  test('should switch turns after jump that results in game end to the player that lost and keep status game over', () => {
+
+    const state = createInitState()
+    state.board = [
+      [0, 0, 0, 0, 1, 1, 1, 0],
+      [0, 0, 0, 0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 1],
+      [2, 0, 0, 0, 0, 0, 0, 0],
+      [2, 2, 2, 0, 0, 0, 0, 0],
+      [2, 2, 0, 0, 0, 0, 0, 0],
+      [2, 2, 2, 2, 0, 0, 0, 0]
+    ]
+    state.actionsHistory = [[[6, 0], [4, 2]]]
+    const target1 = {
+      rowIndex: 2, columnIndex: 5, piece: 1
+    }
+    const selectedState = gameBrain(state, selectCellAction(target1))
+    const target2 = {
+      rowIndex: 0, columnIndex: 7, piece: 0
+    }
+    const jumpedState = gameBrain(selectedState, selectCellAction(target2))
+
+    expect(gameBrain(jumpedState, endTurnAction())
+    ).toEqual(expect.objectContaining({
+      endTurnAllowed: false,
+      playerTurn: 2,
+      win: 1,
+      winnerFinished: true
+    }))
+  })
+
+  test('dont switch turns after game is over to allow the other player finish the game', () => {
+    const state = createInitState()
+    state.board = [
+      [0, 0, 0, 0, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 1],
+      [2, 0, 2, 0, 0, 0, 0, 0],
+      [2, 2, 0, 0, 0, 0, 0, 0],
+      [2, 2, 0, 0, 0, 0, 0, 0],
+      [2, 2, 2, 2, 0, 0, 0, 0]
+    ]
+    state.actionsHistory = []
+    state.winnerFinished = true
+    state.win = 1
+    state.playerTurn = 2
+
+    const target1 = {
+      rowIndex: 4, columnIndex: 2, piece: 2
+    }
+    const selectedState = gameBrain(state, selectCellAction(target1))
+    const target2 = {
+      rowIndex: 5, columnIndex: 2, piece: 0
+    }
+
+    expect(gameBrain(selectedState, selectCellAction(target2))
+    ).toEqual(expect.objectContaining({
+      endTurnAllowed: false,
+      playerTurn: 2,
+      win: 1,
+      winnerFinished: true
+    }))
+
+  })
+
+  test('keep counting score while the other player finish the game', () => {
+    const state = createInitState()
+    state.board = [
+      [0, 0, 0, 0, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 1],
+      [2, 0, 2, 0, 0, 0, 0, 0],
+      [2, 2, 0, 0, 0, 0, 0, 0],
+      [2, 2, 0, 0, 0, 0, 0, 0],
+      [2, 2, 2, 2, 0, 0, 0, 0]
+    ]
+    state.actionsHistory = []
+    state.winnerFinished = true
+    state.win = 1
+    state.playerTurn = 2
+
+    const target1 = {
+      rowIndex: 4, columnIndex: 2, piece: 2
+    }
+    const selectedState = gameBrain(state, selectCellAction(target1))
+    const target2 = {
+      rowIndex: 5, columnIndex: 2, piece: 0
+    }
+
+    expect(gameBrain(selectedState, selectCellAction(target2))
+    ).toEqual(expect.objectContaining({
+      score: 1,
+      winnerFinished: true,
+      looserFinished: false
+    }))
+  })
+
+  test('keep counting score while the other player finish the game', () => {
+    const state = createInitState()
+    state.board = [
+      [0, 0, 0, 0, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 1],
+      [2, 0, 2, 0, 0, 0, 0, 0],
+      [2, 2, 0, 0, 0, 0, 0, 0],
+      [2, 2, 0, 0, 0, 0, 0, 0],
+      [2, 2, 2, 2, 0, 0, 0, 0]
+    ]
+    state.actionsHistory = []
+    state.winnerFinished = true
+    state.win = 1
+    state.playerTurn = 2
+
+    const target1 = {
+      rowIndex: 4, columnIndex: 2, piece: 2
+    }
+    const selectedState = gameBrain(state, selectCellAction(target1))
+    const target2 = {
+      rowIndex: 5, columnIndex: 2, piece: 0
+    }
+    const unfinishedState = gameBrain(selectedState, selectCellAction(target2))
+    const target3 = {
+      rowIndex: 5, columnIndex: 2, piece: 2
+    }
+    const unfinishedSelectedState = gameBrain(unfinishedState, selectCellAction(target3))
+    const target4 = {
+      rowIndex: 6, columnIndex: 2, piece: 0
+    }
+    expect(gameBrain(unfinishedSelectedState, selectCellAction(target4))
+    ).toEqual(expect.objectContaining({
+      score: 2,
+      winnerFinished: true,
+      looserFinished: true
     }))
   })
 })

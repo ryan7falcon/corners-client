@@ -25,7 +25,7 @@ describe('Validate state', () => {
 
     expect(() => {
       validateState(state)
-    }).toThrow('state must have a "actionsHistory" property that is a 1-dimentional array')
+    }).toThrow('state must have a "actionsHistory" property that is an array')
   })
 
   test('state with an improper board throws', () => {

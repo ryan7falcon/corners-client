@@ -42,6 +42,8 @@ function checkWin(state) {
   return checkPlayer(1) || checkPlayer(2)
 }
 
+const switchPlayer = (playerTurn) => playerTurn === 2 ? 1 : 2
+
 // Get next state: end turn
 function endTurn(state) {
   validateState(state)
@@ -53,12 +55,14 @@ function endTurn(state) {
     newState.endTurnAllowed = false
 
     if (checkWin(newState)) {
-      newState.gameOver = true
+      newState.winnerFinished = true
       newState.win = newState.playerTurn
+      newState.playerTurn = switchPlayer(newState.playerTurn)
     } else {
-      newState.playerTurn = newState.playerTurn === 2 ? 1 : 2
+      newState.playerTurn = switchPlayer(newState.playerTurn)
       newState.message = `Player ${newState.icons[newState.playerTurn - 1]} turn`
     }
+
   } else {
     throw new Error('End Turn is not allowed')
   }

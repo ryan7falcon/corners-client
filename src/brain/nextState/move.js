@@ -23,7 +23,7 @@ function move(state, target) {
     ${startPos} to ${targetPos}`
   newState.actionsHistory.push([startPos, targetPos])
   newState.endTurnAllowed = true
-
+  console.log('action history', newState.actionsHistory)
   return newState
 }
 

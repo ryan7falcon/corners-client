@@ -13,16 +13,28 @@ const createInitState = (icons = ['💩', '💎']) => {
     [1, 1, 1, 0, 0, 0, 0, 0],
     [1, 1, 1, 1, 0, 0, 0, 0]
   ]
+  // const START_BOARD = [
+  //   [0, 0, 0, 0, 1, 1, 1, 1],
+  //   [0, 0, 0, 0, 0, 1, 1, 1],
+  //   [0, 0, 0, 0, 0, 0, 0, 1],
+  //   [0, 0, 0, 0, 0, 0, 1, 1],
+  //   [2, 0, 0, 0, 0, 0, 0, 0],
+  //   [2, 2, 2, 0, 0, 0, 0, 0],
+  //   [2, 2, 0, 0, 0, 0, 0, 0],
+  //   [2, 2, 2, 2, 0, 0, 0, 0]
+  // ]
   return {
     board: START_BOARD,
     playerTurn: 1,
     endTurnAllowed: false,
     win: 0,
-    gameOver: false,
+    winnerFinished: false,
     actionsHistory: [],
     icons,
     message: `Player ${icons[0]} turn`,
     selectedCell: undefined,
+    score: 0,
+    looserFinished: false,
     validTargets: {
       walks: {},
       jumps: {}

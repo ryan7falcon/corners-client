@@ -27,7 +27,7 @@ const useStyles = createUseStyles({
   }
 })
 
-function DisplayState ({ playerTurn, endTurnAllowed, win, gameOver, actionsHistory }) {
+function DisplayState({ playerTurn, endTurnAllowed, win, winnerFinished, actionsHistory }) {
   const classes = useStyles()
   return (
     <div className={classes.state}>
@@ -42,7 +42,7 @@ function DisplayState ({ playerTurn, endTurnAllowed, win, gameOver, actionsHisto
           <div className={classes.propertyValue}>{win.toString()}</div>
         </div>
         <div className={classes.propertyName}>Game Over:
-          <div className={classes.propertyValue}>{gameOver.toString()}</div>
+          <div className={classes.propertyValue}>{winnerFinished.toString()}</div>
         </div>
         {/* <div className={classes.propertyName}>Actions History:
           <div className={classes.propertyValue}>[{actionsHistory.toString()}]</div>

@@ -11,7 +11,7 @@ const validateState = (state) => {
   }
 
   if (!objHasProperty(state, 'actionsHistory') || !isArray(state.actionsHistory)) {
-    throw new Error('state must have a "actionsHistory" property that is a 1-dimentional array')
+    throw new Error('state must have a "actionsHistory" property that is an array')
   }
 
   if (!objHasProperty(state, 'icons') || !isArray(state.icons)) {
