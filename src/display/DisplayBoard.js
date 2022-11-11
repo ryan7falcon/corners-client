@@ -72,7 +72,7 @@ const useStyles = createUseStyles({
 })
 // TODO: add row and column indecies (chessboard notation)
 // TODO: make icons non-selectable as text
-function DisplayBoard({ state, handleSelectCell, icons }) {
+function DisplayBoard({ state, handleSelectCell, getIcon }) {
   const classes = useStyles()
   return (
     <div className={classes.boardContainer}>
@@ -82,7 +82,7 @@ function DisplayBoard({ state, handleSelectCell, icons }) {
             <div className={classes.row} key={rowIndex}>
               {row.map((x, columnIndex) => {
                 const target = {
-                  position: [rowIndex, columnIndex],
+                  position: [ rowIndex, columnIndex ],
                   piece: x
                 }
                 return <Cell
@@ -92,9 +92,9 @@ function DisplayBoard({ state, handleSelectCell, icons }) {
                   x={x}
                   columnIndex={columnIndex}
                   rowIndex={rowIndex}
-                  key={[rowIndex, columnIndex]}
-                  isSelected={!!state.selectedCell && (arrayEquals(state.selectedCell.position, [rowIndex, columnIndex]))}
-                  icons={icons}
+                  key={[ rowIndex, columnIndex ]}
+                  isSelected={!!state.selectedCell && (arrayEquals(state.selectedCell.position, [ rowIndex, columnIndex ]))}
+                  getIcon={getIcon}
                   isValidTarget={isValidWalk(state, target) || isValidJump(state, target)}
                   validTargetClassName={classes.validTargetCell}
 
@@ -108,10 +108,10 @@ function DisplayBoard({ state, handleSelectCell, icons }) {
   )
 }
 
-function Cell({ x, className, selectedClassName, validTargetClassName, handleSelect, rowIndex, columnIndex, isSelected, icons, isValidTarget }) {
+function Cell({ x, className, selectedClassName, validTargetClassName, handleSelect, rowIndex, columnIndex, isSelected, getIcon, isValidTarget }) {
   return (
     <div data-testid={`cell-${rowIndex}-${columnIndex}`} className={isSelected ? selectedClassName : isValidTarget ? validTargetClassName : className} key={columnIndex} onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}>
-      {(x === 1) ? icons[0] : (x === 2) ? icons[1] : ''}
+      {getIcon(x)}
     </div>
   )
 }

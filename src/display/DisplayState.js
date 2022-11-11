@@ -24,29 +24,23 @@ const useStyles = createUseStyles({
     justifyContent: 'center',
     alignItems: 'center',
     width: 'calc(300px + 5vmin)'
+  },
+  hiddenDiv: {
+    display: 'none'
   }
 })
 
-function DisplayState({ playerTurn, endTurnAllowed, win, winnerFinished, actionsHistory }) {
+function DisplayState({ playerTurn, endTurnAllowed, win, winnerFinished, score, actionsHistory, getIcon }) {
   const classes = useStyles()
   return (
     <div className={classes.state}>
       <div className={classes.propertyContainer}>
-        {/* <div className={classes.propertyName}>Player Turn:
-          <div className={classes.propertyValue}>{playerTurn}</div>
-        </div> */}
-        {/* <div className={classes.propertyName}>End Turn allowed:
-          <div className={classes.propertyValue}>{endTurnAllowed.toString()}</div>
-        </div> */}
-        <div className={classes.propertyName}>Win:
-          <div className={classes.propertyValue}>{win.toString()}</div>
+        <div className={winnerFinished ? classes.propertyName : classes.hiddenDiv}> Winner:
+          <div className={classes.propertyValue}>{getIcon(win)}</div>
         </div>
-        <div className={classes.propertyName}>Game Over:
-          <div className={classes.propertyValue}>{winnerFinished.toString()}</div>
+        <div className={winnerFinished ? classes.propertyName : classes.hiddenDiv}>Score:
+          <div className={classes.propertyValue}>{score.toString()}</div>
         </div>
-        {/* <div className={classes.propertyName}>Actions History:
-          <div className={classes.propertyValue}>[{actionsHistory.toString()}]</div>
-        </div> */}
       </div>
     </div>
   )

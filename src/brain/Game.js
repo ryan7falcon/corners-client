@@ -45,7 +45,8 @@ const createInitState = (icons = [ '💩', '💎' ]) => {
 const actions = {
   move: 'MOVE',
   endTurn: 'END_TURN',
-  selectCell: 'SELECT_CELL'
+  selectCell: 'SELECT_CELL',
+  restart: 'RESTART'
 }
 
 // actions
@@ -85,7 +86,12 @@ function selectCellAction({
     }
   }
 }
-
+const restartGameAction = () => {
+  return {
+    type: actions.restart,
+    payload: {}
+  }
+}
 // reducer
 function gameBrain(state, action) {
   switch (action.type) {
@@ -104,10 +110,14 @@ function gameBrain(state, action) {
     case actions.selectCell: {
       return selectCell(state, action.payload.target)
     }
+    // RESTART
+    case actions.restart: {
+      return createInitState(state.icons)
+    }
     default: {
       return state
     }
   }
 }
 
-export { endTurnAction, moveAction, selectCellAction, gameBrain, createInitState }
+export { endTurnAction, moveAction, selectCellAction, restartGameAction, gameBrain, createInitState }

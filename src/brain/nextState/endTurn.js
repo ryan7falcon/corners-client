@@ -44,6 +44,8 @@ function checkWin(state) {
 
 const switchPlayer = (playerTurn) => playerTurn === 2 ? 1 : 2
 
+const playerTurnMessage = (state) => state.message = `Player ${state.icons[ state.playerTurn - 1 ]} turn`
+
 // Get next state: end turn
 function endTurn(state) {
   validateState(state)
@@ -62,7 +64,7 @@ function endTurn(state) {
         newState.message = 'Game Over!'
         newState.looserFinished = true
       } else {
-        newState.message = `Player ${newState.icons[ newState.playerTurn - 1 ]} turn`
+        newState.message = playerTurnMessage(newState)
       }
 
     } else if (checkWin(newState)) {
@@ -70,10 +72,12 @@ function endTurn(state) {
       newState.winnerFinished = true
       newState.win = newState.playerTurn
       newState.playerTurn = switchPlayer(newState.playerTurn)
+      newState.message = playerTurnMessage(newState)
+
     } else {
       // else game continues as normal 
       newState.playerTurn = switchPlayer(newState.playerTurn)
-      newState.message = `Player ${newState.icons[ newState.playerTurn - 1 ]} turn`
+      newState.message = playerTurnMessage(newState)
     }
 
   } else {

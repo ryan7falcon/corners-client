@@ -1,11 +1,11 @@
 import { useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 
-import { endTurnAction, selectCellAction, gameBrain, createInitState } from './brain/Game'
+import { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState } from './brain/Game'
 
 import DisplayState from './display/DisplayState'
 import DisplayBoard from './display/DisplayBoard'
-import { EndTurnBtn } from './display/Buttons'
+import { EndTurnBtn, RestartGameBtn } from './display/Buttons'
 import './App.css'
 
 const useStyles = createUseStyles({
@@ -52,9 +52,9 @@ const useStyles = createUseStyles({
 // TODO: after game over allow only one player to make turns and count them to get the score
 function App() {
   const classes = useStyles()
-  const icons = ['💩', '💎']
-
-  const [game, dispatch] = useReducer(gameBrain, createInitState(icons))
+  const icons = [ '💩', '💎' ]
+  const getIcon = (player) => (player === 1) ? icons[ 0 ] : (player === 2) ? icons[ 1 ] : ''
+  const [ game, dispatch ] = useReducer(gameBrain, createInitState(icons))
 
   // TODO: only allow hover effect on own cells
 
@@ -69,12 +69,16 @@ function App() {
     dispatch(endTurnAction())
   }
 
+  const handleRestartGame = () => {
+    dispatch(restartGameAction())
+  }
+
   return (
     <div className={classes.app}>
       <header className={classes.appHeader}>
         <div className={classes.gameHeader}>Game of Corners  🚧 🛠  Under Construction ⚙ 🚧</div>
         <div className={classes.gameContainer}>
-          <DisplayBoard state={game} handleSelectCell={handleSelectCell} icons={icons} />
+          <DisplayBoard state={game} handleSelectCell={handleSelectCell} getIcon={getIcon} />
           <div className={classes.gameColumn}>
             <DisplayState
               playerTurn={game.playerTurn}
@@ -82,15 +86,17 @@ function App() {
               win={game.win}
               winnerFinished={game.winnerFinished}
               actionsHistory={game.actionsHistory}
+              score={game.score}
+              getIcon={getIcon}
             />
 
             <div className={classes.message}>{game.message}</div>
 
             <div id='allowed-moves' />
-            <EndTurnBtn
+            {game.looserFinished ? <RestartGameBtn handleRestartGame={handleRestartGame} /> : <EndTurnBtn
               endTurnAllowed={game.endTurnAllowed}
               handleEndTurn={handleEndTurn}
-            />
+            />}
           </div>
         </div>
 
