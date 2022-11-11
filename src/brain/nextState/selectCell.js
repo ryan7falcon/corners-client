@@ -42,6 +42,10 @@ const maybeMakeAMove = (state, target) => {
 
 // triage selection - select, deselct, move, nothing
 function selectCell(state, target) {
+  // if second player finished, game is over
+  if (state.looserFinished) {
+    return state
+  }
   // if there is an active selection
   if (state.selectedCell) {
     // deselect selected cell

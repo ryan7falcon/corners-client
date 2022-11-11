@@ -16,14 +16,14 @@ describe('selectCellAction', () => {
 
     expect(endState).toEqual(expect.objectContaining({
       board: [
-        [0, 0, 0, 0, 2, 2, 2, 2],
-        [0, 0, 0, 0, 0, 2, 2, 2],
-        [0, 0, 0, 0, 0, 0, 2, 2],
-        [0, 0, 0, 0, 0, 0, 0, 2],
-        [1, 0, 1, 0, 0, 0, 0, 0],
-        [1, 1, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 0]]
+        [ 0, 0, 0, 0, 2, 2, 2, 2 ],
+        [ 0, 0, 0, 0, 0, 2, 2, 2 ],
+        [ 0, 0, 0, 0, 0, 0, 2, 2 ],
+        [ 0, 0, 0, 0, 0, 0, 0, 2 ],
+        [ 1, 0, 1, 0, 0, 0, 0, 0 ],
+        [ 1, 1, 0, 0, 0, 0, 0, 0 ],
+        [ 0, 1, 1, 0, 0, 0, 0, 0 ],
+        [ 1, 1, 1, 1, 0, 0, 0, 0 ] ]
     }))
   })
 
@@ -64,18 +64,18 @@ describe('selectCellAction', () => {
   test('must not allow selecting other piece after jumping ', () => {
     const state = createInitState()
     state.board = [
-      [0, 0, 0, 0, 2, 2, 2, 2],
-      [0, 0, 0, 0, 0, 2, 2, 2],
-      [0, 0, 0, 0, 0, 0, 0, 2],
-      [0, 0, 0, 0, 0, 2, 2, 0],
-      [1, 1, 0, 0, 0, 0, 0, 0],
-      [1, 1, 0, 0, 0, 0, 0, 0],
-      [1, 0, 1, 0, 0, 0, 0, 0],
-      [1, 1, 1, 1, 0, 0, 0, 0]]
-    state.actionsHistory = [[6, 1], [4, 1]]
+      [ 0, 0, 0, 0, 2, 2, 2, 2 ],
+      [ 0, 0, 0, 0, 0, 2, 2, 2 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 2 ],
+      [ 0, 0, 0, 0, 0, 2, 2, 0 ],
+      [ 1, 1, 0, 0, 0, 0, 0, 0 ],
+      [ 1, 1, 0, 0, 0, 0, 0, 0 ],
+      [ 1, 0, 1, 0, 0, 0, 0, 0 ],
+      [ 1, 1, 1, 1, 0, 0, 0, 0 ] ]
+    state.actionsHistory = [ [ 6, 1 ], [ 4, 1 ] ]
     state.endTurnAllowed = true
-    state.selectedCell = { position: [4, 1], piece: 1 }
-    const target = { position: [5, 1], piece: 1 }
+    state.selectedCell = { position: [ 4, 1 ], piece: 1 }
+    const target = { position: [ 5, 1 ], piece: 1 }
 
     expect(
       gameBrain(state, selectCellAction(target))
@@ -104,16 +104,16 @@ describe('Testing End Turn', () => {
 
   test('End Turn with win position must end the game', () => {
     let board = [
-      [0, 0, 0, 0, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 1, 1],
-      [0, 0, 0, 0, 2, 0, 0, 1],
-      [2, 0, 0, 0, 0, 0, 0, 0],
-      [2, 2, 0, 0, 0, 0, 0, 0],
-      [2, 2, 2, 0, 0, 0, 0, 0],
-      [2, 2, 2, 0, 0, 0, 0, 0]
+      [ 0, 0, 0, 0, 1, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 1, 1 ],
+      [ 0, 0, 0, 0, 2, 0, 0, 1 ],
+      [ 2, 0, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 0, 0, 0, 0, 0 ]
     ]
-    let state = { endTurnAllowed: true, playerTurn: 1, board, actionsHistory: [], icons: ['1', '2'] }
+    let state = { endTurnAllowed: true, playerTurn: 1, board, actionsHistory: [], icons: [ '1', '2' ] }
 
     expect(gameBrain(state, endTurnAction())).toEqual(expect.objectContaining({
       endTurnAllowed: false,
@@ -123,16 +123,16 @@ describe('Testing End Turn', () => {
     }))
 
     board = [
-      [0, 0, 0, 0, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 1, 0],
-      [0, 0, 0, 0, 1, 0, 0, 1],
-      [2, 0, 0, 0, 0, 0, 0, 0],
-      [2, 2, 0, 0, 0, 0, 0, 0],
-      [2, 2, 2, 0, 0, 0, 0, 0],
-      [2, 2, 2, 2, 0, 0, 0, 0]
+      [ 0, 0, 0, 0, 1, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 1, 0 ],
+      [ 0, 0, 0, 0, 1, 0, 0, 1 ],
+      [ 2, 0, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 2, 0, 0, 0, 0 ]
     ]
-    state = { endTurnAllowed: true, playerTurn: 2, board, actionsHistory: [], icons: ['1', '2'] }
+    state = { endTurnAllowed: true, playerTurn: 2, board, actionsHistory: [], icons: [ '1', '2' ] }
 
     expect(gameBrain(state, endTurnAction())).toEqual(expect.objectContaining({
       endTurnAllowed: false,
@@ -146,16 +146,16 @@ describe('Testing End Turn', () => {
 
     const state = createInitState()
     state.board = [
-      [0, 0, 0, 0, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 0, 1],
-      [0, 0, 0, 0, 0, 0, 1, 1],
-      [2, 0, 0, 0, 0, 0, 0, 0],
-      [2, 2, 2, 0, 0, 0, 0, 0],
-      [2, 2, 0, 0, 0, 0, 0, 0],
-      [2, 2, 2, 2, 0, 0, 0, 0]
+      [ 0, 0, 0, 0, 1, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 1, 1 ],
+      [ 2, 0, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 2, 0, 0, 0, 0 ]
     ]
-    state.actionsHistory = [[[6, 0], [4, 2]]]
+    state.actionsHistory = [ [ [ 6, 0 ], [ 4, 2 ] ] ]
     const target1 = {
       rowIndex: 3, columnIndex: 6, piece: 1
     }
@@ -177,16 +177,16 @@ describe('Testing End Turn', () => {
 
     const state = createInitState()
     state.board = [
-      [0, 0, 0, 0, 1, 1, 1, 0],
-      [0, 0, 0, 0, 0, 1, 1, 1],
-      [0, 0, 0, 0, 0, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 0, 1],
-      [2, 0, 0, 0, 0, 0, 0, 0],
-      [2, 2, 2, 0, 0, 0, 0, 0],
-      [2, 2, 0, 0, 0, 0, 0, 0],
-      [2, 2, 2, 2, 0, 0, 0, 0]
+      [ 0, 0, 0, 0, 1, 1, 1, 0 ],
+      [ 0, 0, 0, 0, 0, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 1 ],
+      [ 2, 0, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 2, 0, 0, 0, 0 ]
     ]
-    state.actionsHistory = [[[6, 0], [4, 2]]]
+    state.actionsHistory = [ [ [ 6, 0 ], [ 4, 2 ] ] ]
     const target1 = {
       rowIndex: 2, columnIndex: 5, piece: 1
     }
@@ -208,14 +208,14 @@ describe('Testing End Turn', () => {
   test('dont switch turns after game is over to allow the other player finish the game', () => {
     const state = createInitState()
     state.board = [
-      [0, 0, 0, 0, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 1, 1],
-      [0, 0, 0, 0, 0, 0, 0, 1],
-      [2, 0, 2, 0, 0, 0, 0, 0],
-      [2, 2, 0, 0, 0, 0, 0, 0],
-      [2, 2, 0, 0, 0, 0, 0, 0],
-      [2, 2, 2, 2, 0, 0, 0, 0]
+      [ 0, 0, 0, 0, 1, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 1 ],
+      [ 2, 0, 2, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 2, 0, 0, 0, 0 ]
     ]
     state.actionsHistory = []
     state.winnerFinished = true
@@ -243,14 +243,14 @@ describe('Testing End Turn', () => {
   test('keep counting score while the other player finish the game', () => {
     const state = createInitState()
     state.board = [
-      [0, 0, 0, 0, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 1, 1],
-      [0, 0, 0, 0, 0, 0, 0, 1],
-      [2, 0, 2, 0, 0, 0, 0, 0],
-      [2, 2, 0, 0, 0, 0, 0, 0],
-      [2, 2, 0, 0, 0, 0, 0, 0],
-      [2, 2, 2, 2, 0, 0, 0, 0]
+      [ 0, 0, 0, 0, 1, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 1 ],
+      [ 2, 0, 2, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 2, 0, 0, 0, 0 ]
     ]
     state.actionsHistory = []
     state.winnerFinished = true
@@ -273,17 +273,17 @@ describe('Testing End Turn', () => {
     }))
   })
 
-  test('keep counting score while the other player finish the game', () => {
+  test('Game state is finished when the second player finishes', () => {
     const state = createInitState()
     state.board = [
-      [0, 0, 0, 0, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 1, 1],
-      [0, 0, 0, 0, 0, 0, 0, 1],
-      [2, 0, 2, 0, 0, 0, 0, 0],
-      [2, 2, 0, 0, 0, 0, 0, 0],
-      [2, 2, 0, 0, 0, 0, 0, 0],
-      [2, 2, 2, 2, 0, 0, 0, 0]
+      [ 0, 0, 0, 0, 1, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 1, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 1, 1 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 1 ],
+      [ 2, 0, 2, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+      [ 2, 2, 2, 2, 0, 0, 0, 0 ]
     ]
     state.actionsHistory = []
     state.winnerFinished = true
@@ -305,8 +305,21 @@ describe('Testing End Turn', () => {
     const target4 = {
       rowIndex: 6, columnIndex: 2, piece: 0
     }
-    expect(gameBrain(unfinishedSelectedState, selectCellAction(target4))
+    const finsishedState = gameBrain(unfinishedSelectedState, selectCellAction(target4)
+    // should add to the score and change looserFinished state to true
+    expect(finsishedState)
     ).toEqual(expect.objectContaining({
+      score: 2,
+      winnerFinished: true,
+      looserFinished: true
+    }))
+    const target5 = {
+      rowIndex: 7, columnIndex: 0, piece: 2
+    }
+    // should not allow selection anymore - game is over
+    expect(gameBrain(finsishedState, selectCellAction(target5))
+    ).toEqual(expect.objectContaining({
+      selectedCell: undefined,
       score: 2,
       winnerFinished: true,
       looserFinished: true

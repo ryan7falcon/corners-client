@@ -2,27 +2,27 @@ import { move } from './nextState/move'
 import { endTurn } from './nextState/endTurn'
 import { selectCell } from './nextState/selectCell'
 
-const createInitState = (icons = ['💩', '💎']) => {
-  const START_BOARD = [
-    [0, 0, 0, 0, 2, 2, 2, 2],
-    [0, 0, 0, 0, 0, 2, 2, 2],
-    [0, 0, 0, 0, 0, 0, 2, 2],
-    [0, 0, 0, 0, 0, 0, 0, 2],
-    [1, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 0, 0, 0, 0]
-  ]
+const createInitState = (icons = [ '💩', '💎' ]) => {
   // const START_BOARD = [
-  //   [0, 0, 0, 0, 1, 1, 1, 1],
-  //   [0, 0, 0, 0, 0, 1, 1, 1],
-  //   [0, 0, 0, 0, 0, 0, 0, 1],
-  //   [0, 0, 0, 0, 0, 0, 1, 1],
-  //   [2, 0, 0, 0, 0, 0, 0, 0],
-  //   [2, 2, 2, 0, 0, 0, 0, 0],
-  //   [2, 2, 0, 0, 0, 0, 0, 0],
-  //   [2, 2, 2, 2, 0, 0, 0, 0]
+  //   [0, 0, 0, 0, 2, 2, 2, 2],
+  //   [0, 0, 0, 0, 0, 2, 2, 2],
+  //   [0, 0, 0, 0, 0, 0, 2, 2],
+  //   [0, 0, 0, 0, 0, 0, 0, 2],
+  //   [1, 0, 0, 0, 0, 0, 0, 0],
+  //   [1, 1, 0, 0, 0, 0, 0, 0],
+  //   [1, 1, 1, 0, 0, 0, 0, 0],
+  //   [1, 1, 1, 1, 0, 0, 0, 0]
   // ]
+  const START_BOARD = [
+    [ 0, 0, 0, 0, 1, 1, 1, 1 ],
+    [ 0, 0, 0, 0, 0, 1, 1, 1 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 1 ],
+    [ 0, 0, 0, 0, 0, 0, 1, 1 ],
+    [ 2, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 2, 2, 2, 0, 0, 0, 0, 0 ],
+    [ 2, 2, 0, 0, 0, 0, 0, 0 ],
+    [ 2, 2, 2, 2, 0, 0, 0, 0 ]
+  ]
   return {
     board: START_BOARD,
     playerTurn: 1,
@@ -31,7 +31,7 @@ const createInitState = (icons = ['💩', '💎']) => {
     winnerFinished: false,
     actionsHistory: [],
     icons,
-    message: `Player ${icons[0]} turn`,
+    message: `Player ${icons[ 0 ]} turn`,
     selectedCell: undefined,
     score: 0,
     looserFinished: false,
@@ -75,7 +75,7 @@ function selectCellAction({
   rowIndex, columnIndex, piece
 }) {
   const target = {
-    position: [rowIndex, columnIndex],
+    position: [ rowIndex, columnIndex ],
     piece
   }
   return {
