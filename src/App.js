@@ -47,9 +47,7 @@ const useStyles = createUseStyles({
   }
 })
 
-// TODO: Display game over message and restart game button
 // TODO: dont allow to select a different piece when chain jumping, unless returned to the same spot, then make endTurn allowed false to start the turn from scratch and eraze jumps from history
-// TODO: after game over allow only one player to make turns and count them to get the score
 function App() {
   const classes = useStyles()
   const icons = [ '💩', '💎' ]
