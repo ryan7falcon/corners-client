@@ -1,6 +1,8 @@
 import { createUseStyles } from 'react-jss'
 import { positionIsInArray, arrayEquals } from '../util'
 import { isValidWalk, isValidJump } from '../brain/checks'
+import Cell from './Cell'
+
 const useStyles = createUseStyles({
   boardContainer: {
     display: 'flex',
@@ -18,55 +20,6 @@ const useStyles = createUseStyles({
   row: {
     display: 'flex',
     flexDirection: 'row'
-  },
-
-  cell: {
-    overflow: 'hidden',
-    display: 'flex',
-    width: 'calc(20px + 5vmin)',
-    height: 'calc(20px + 5vmin)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    border: '1px solid #555',
-    position: 'relative',
-    transition: 'all 1000ms cubic-bezier(0.19, 1, 0.22, 1)',
-    cursor: 'pointer',
-    '&:hover': {
-      '&:after': {
-        left: '120%',
-        transition: 'all 1000ms cubic-bezier(0.19, 1, 0.22, 1)'
-      }
-    },
-    '&:after': {
-      position: 'absolute',
-      content: "''",
-      background: 'rgba(255,255,255,0.05)',
-      zIndex: 10,
-      width: 'calc(20px + 5vmin)',
-      height: 'calc(20px + 5vmin)',
-      top: '0',
-      left: 'calc(-20px - 5vmin)',
-      transition: 'all 1000ms cubic-bezier(0.19, 1, 0.22, 1)'
-    },
-    '&:active': {
-      fontSize: 'calc(10px + 4vmin)'
-    }
-  },
-  selectedCell: {
-    extend: 'cell',
-    background: 'rgba(255,255,255,0.1)',
-    '&:after': {
-      transition: 'none'
-    },
-    '&:hover': {
-      '&:after': {
-        transition: 'none'
-      }
-    }
-  },
-  validTargetCell: {
-    extend: 'cell',
-    background: 'rgba(0,255,0,0.1)'
   }
 
 })
@@ -86,8 +39,6 @@ function DisplayBoard({ state, handleSelectCell, getIcon }) {
                   piece: x
                 }
                 return <Cell
-                  className={classes.cell}
-                  selectedClassName={classes.selectedCell}
                   handleSelect={handleSelectCell}
                   x={x}
                   columnIndex={columnIndex}
@@ -95,23 +46,14 @@ function DisplayBoard({ state, handleSelectCell, getIcon }) {
                   key={[ rowIndex, columnIndex ]}
                   isSelected={!!state.selectedCell && (arrayEquals(state.selectedCell.position, [ rowIndex, columnIndex ]))}
                   getIcon={getIcon}
-                  isValidTarget={isValidWalk(state, target) || isValidJump(state, target)}
-                  validTargetClassName={classes.validTargetCell}
-
+                  isValidWalk={isValidWalk(state, target)}
+                  isValidJump={isValidJump(state, target)}
                 />
               })}
             </div>
           ))
         }
       </div>
-    </div>
-  )
-}
-
-function Cell({ x, className, selectedClassName, validTargetClassName, handleSelect, rowIndex, columnIndex, isSelected, getIcon, isValidTarget }) {
-  return (
-    <div data-testid={`cell-${rowIndex}-${columnIndex}`} className={isSelected ? selectedClassName : isValidTarget ? validTargetClassName : className} key={columnIndex} onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}>
-      {getIcon(x)}
     </div>
   )
 }
