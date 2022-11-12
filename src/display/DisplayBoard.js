@@ -25,7 +25,7 @@ const useStyles = createUseStyles({
 })
 // TODO: add row and column indecies (chessboard notation)
 // TODO: make icons non-selectable as text
-function DisplayBoard({ state, handleSelectCell, getIcon }) {
+function DisplayBoard({ state, handleSelectCell }) {
   const classes = useStyles()
   return (
     <div className={classes.boardContainer}>
@@ -39,13 +39,13 @@ function DisplayBoard({ state, handleSelectCell, getIcon }) {
                   piece: x
                 }
                 return <Cell
+                  state={state}
                   handleSelect={handleSelectCell}
                   x={x}
                   columnIndex={columnIndex}
                   rowIndex={rowIndex}
                   key={[ rowIndex, columnIndex ]}
                   isSelected={!!state.selectedCell && (arrayEquals(state.selectedCell.position, [ rowIndex, columnIndex ]))}
-                  getIcon={getIcon}
                   isValidWalk={isValidWalk(state, target)}
                   isValidJump={isValidJump(state, target)}
                 />

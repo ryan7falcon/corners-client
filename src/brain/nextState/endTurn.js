@@ -1,5 +1,6 @@
 import { deselect } from './selectCell'
 import { validateState } from '../validateStateAndTarget'
+import { playerTurnMessage, gameOverMessage } from './messages'
 
 const ONE_WIN_MASK = [
   [ 0, 0, 0, 0, 1, 1, 1, 1 ],
@@ -44,7 +45,7 @@ function checkWin(state) {
 
 const switchPlayer = (playerTurn) => playerTurn === 2 ? 1 : 2
 
-const playerTurnMessage = (state) => state.message = `Player ${state.icons[ state.playerTurn - 1 ]} turn`
+
 
 // Get next state: end turn
 function endTurn(state) {
@@ -61,7 +62,7 @@ function endTurn(state) {
       newState.score += 1
       // check if looser finished
       if (checkPlayer(state, newState.playerTurn)) {
-        newState.message = 'Game Over!'
+        newState.message = gameOverMessage
         newState.looserFinished = true
       } else {
         newState.message = playerTurnMessage(newState)

@@ -30,16 +30,16 @@ const useStyles = createUseStyles({
   }
 })
 
-function DisplayState({ playerTurn, endTurnAllowed, win, winnerFinished, score, actionsHistory, getIcon }) {
+function DisplayState({ state }) {
   const classes = useStyles()
   return (
     <div className={classes.state}>
       <div className={classes.propertyContainer}>
-        <div className={winnerFinished ? classes.propertyName : classes.hiddenDiv}> Winner:
-          <div className={classes.propertyValue}>{getIcon(win)}</div>
+        <div className={state.winnerFinished ? classes.propertyName : classes.hiddenDiv}> Winner:
+          <div className={classes.propertyValue}>{state.getIcon(state.win)}</div>
         </div>
-        <div className={winnerFinished ? classes.propertyName : classes.hiddenDiv}>Score:
-          <div className={classes.propertyValue}>{score.toString()}</div>
+        <div className={state.winnerFinished ? classes.propertyName : classes.hiddenDiv}>Score:
+          <div className={classes.propertyValue}>{state.score.toString()}</div>
         </div>
       </div>
     </div>

@@ -59,16 +59,27 @@ const useStyles = createUseStyles({
 function Cell({
   x,
   handleSelect,
+  state,
   rowIndex,
   columnIndex,
   isSelected,
-  getIcon,
   isValidWalk,
   isValidJump }) {
   const classes = useStyles()
   return (
-    <div data-testid={`cell-${rowIndex}-${columnIndex}`} className={isSelected ? classes.selectedCell : isValidWalk ? classes.validTargetWalk : isValidJump ? classes.validTargetJump : classes.cell} key={columnIndex} onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}>
-      {getIcon(x)}
+    <div
+      data-testid={`cell-${rowIndex}-${columnIndex}`}
+      className={isSelected
+        ? classes.selectedCell
+        : isValidWalk
+          ? classes.validTargetWalk
+          : isValidJump
+            ? classes.validTargetJump
+            : classes.cell}
+      key={columnIndex}
+      onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}
+    >
+      {state.getIcon(x)}
     </div>
   )
 }

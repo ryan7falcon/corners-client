@@ -1,7 +1,7 @@
 import { useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 
-import { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState } from './brain/Game'
+import { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState, getIcon } from './brain/Game'
 
 import DisplayState from './display/DisplayState'
 import DisplayBoard from './display/DisplayBoard'
@@ -47,14 +47,17 @@ const useStyles = createUseStyles({
   }
 })
 
-// TODO: dont allow to select a different piece when chain jumping, unless returned to the same spot, then make endTurn allowed false to start the turn from scratch and eraze jumps from history
 function App() {
   const classes = useStyles()
   const icons = [ '💩', '💎' ]
-  const getIcon = (player) => (player === 1) ? icons[ 0 ] : (player === 2) ? icons[ 1 ] : ''
+
   const [ game, dispatch ] = useReducer(gameBrain, createInitState(icons))
 
   // TODO: only allow hover effect on own cells
+  // TODO: number the rows and columns as on a chessboard
+  // TODO: create server-client app with socket connections
+  // TODO: export turn history to a file
+  // TODO: tutorial
 
   // params: row, column and piece (1- for player 1, 2 - for player 2, 0 - for empty spot) of the target (intention to switch selection)
   const handleSelectCell = (rowIndex, columnIndex, piece) => {
@@ -76,25 +79,21 @@ function App() {
       <header className={classes.appHeader}>
         <div className={classes.gameHeader}>Game of Corners  🚧 🛠  Under Construction ⚙ 🚧</div>
         <div className={classes.gameContainer}>
-          <DisplayBoard state={game} handleSelectCell={handleSelectCell} getIcon={getIcon} />
+          <DisplayBoard state={game} handleSelectCell={handleSelectCell} />
           <div className={classes.gameColumn}>
-            <DisplayState
-              playerTurn={game.playerTurn}
-              endTurnAllowed={game.endTurnAllowed}
-              win={game.win}
-              winnerFinished={game.winnerFinished}
-              actionsHistory={game.actionsHistory}
-              score={game.score}
-              getIcon={getIcon}
-            />
+            <DisplayState state={game} />
 
             <div className={classes.message}>{game.message}</div>
 
             <div id='allowed-moves' />
-            {game.looserFinished ? <RestartGameBtn handleRestartGame={handleRestartGame} /> : <EndTurnBtn
-              endTurnAllowed={game.endTurnAllowed}
-              handleEndTurn={handleEndTurn}
-            />}
+
+            {game.looserFinished
+              ? <RestartGameBtn handleRestartGame={handleRestartGame} />
+              : <EndTurnBtn
+                endTurnAllowed={game.endTurnAllowed}
+                handleEndTurn={handleEndTurn}
+              />
+            }
           </div>
         </div>
 
