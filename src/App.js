@@ -53,7 +53,6 @@ function App() {
 
   const [ game, dispatch ] = useReducer(gameBrain, createInitState(icons))
 
-  // TODO: number the rows and columns as on a chessboard
   // TODO: create server-client app with socket connections
   // TODO: export turn history to a file
   // TODO: tutorial
