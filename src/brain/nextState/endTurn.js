@@ -55,13 +55,16 @@ const looserFinishing = (state) => {
   return result
 }
 
-const winnerJustFinished = (state) => ({
-  endTurnAllowed: false,
-  winnerFinished: true,
-  win: state.playerTurn,
-  playerTurn: getOtherPlayer(state.playerTurn),
-  turnMessage: playerTurnMessage(state.icons, state.playerTurn)
-})
+const winnerJustFinished = (state) => {
+  const nextPlayer = getOtherPlayer(state.playerTurn)
+  return {
+    endTurnAllowed: false,
+    winnerFinished: true,
+    win: state.playerTurn,
+    playerTurn: nextPlayer,
+    turnMessage: playerTurnMessage(state.icons, nextPlayer)
+  }
+}
 
 const switchTurnsAndMessage = (state) => {
   const nextPlayer = getOtherPlayer(state.playerTurn)
