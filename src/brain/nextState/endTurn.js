@@ -47,10 +47,10 @@ const looserFinishing = (state) => {
   }
   // check if looser finished
   if (checkPlayerWin(state.board, state.playerTurn)) {
-    result.message = gameOverMessage
+    result.turnMessage = gameOverMessage
     result.loserFinished = true
   } else {
-    result.message = playerTurnMessage(state.icons, state.playerTurn)
+    result.turnMessage = playerTurnMessage(state.icons, state.playerTurn)
   }
   return result
 }
@@ -60,7 +60,7 @@ const winnerJustFinished = (state) => ({
   winnerFinished: true,
   win: state.playerTurn,
   playerTurn: getOtherPlayer(state.playerTurn),
-  message: playerTurnMessage(state.icons, state.playerTurn)
+  turnMessage: playerTurnMessage(state.icons, state.playerTurn)
 })
 
 const switchTurnsAndMessage = (state) => {
@@ -68,7 +68,7 @@ const switchTurnsAndMessage = (state) => {
   return {
     endTurnAllowed: false,
     playerTurn: nextPlayer,
-    message: playerTurnMessage(state.icons, nextPlayer)
+    turnMessage: playerTurnMessage(state.icons, nextPlayer)
   }
 }
 

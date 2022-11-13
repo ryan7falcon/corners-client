@@ -2,6 +2,8 @@ import { createUseStyles } from 'react-jss'
 import { positionIsInArray, arrayEquals, trace } from '../util'
 import { isValidWalk, isValidJump, allowedToDeselect, isSelected, isOwnTarget } from '../brain/checks'
 import Cell from './Cell'
+import LocationLabel from './LocationLabel'
+import { letters, getNumber } from '../brain/notation'
 
 const useStyles = createUseStyles({
   boardContainer: {
@@ -31,6 +33,7 @@ function DisplayBoard({ state, handleSelectCell }) {
         {
           state.board.map((row, rowIndex) => (
             <div className={classes.row} key={rowIndex}>
+              {LocationLabel(getNumber(rowIndex))}
               {row.map((x, columnIndex) => {
                 const target = {
                   position: [ rowIndex, columnIndex ],
@@ -51,9 +54,13 @@ function DisplayBoard({ state, handleSelectCell }) {
             </div>
           ))
         }
+        <div className={classes.row} key={'letters'}>
+          {letters.map((letter) => LocationLabel(letter))}
+        </div>
       </div>
     </div>
   )
 }
+
 
 export default DisplayBoard

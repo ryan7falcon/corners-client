@@ -1,12 +1,16 @@
+import { getLocation } from '../notation'
+
 const getPlayerIcon = (icons) => (player) => (player === 1) ? icons[ 0 ] : (player === 2) ? icons[ 1 ] : ''
 
-const playerTurnMessage = (icons, playerTurn) => `Player ${getPlayerIcon(icons)(playerTurn)} turn`
+// move messages
+const jumpingMessage = (state, target) => `Player ${getPlayerIcon(state.icons)(state.playerTurn)} jumped: 
+    ${getLocation(state.selectedCell.position)} to ${getLocation(target.position)}. `
+const walkingMessage = (state, target) => `Player ${getPlayerIcon(state.icons)(state.playerTurn)} walked:
+    ${getLocation(state.selectedCell.position)} to ${getLocation(target.position)}. `
 
-const jumpingMessage = (state, startPos, targetPos) => `Player ${state.icons[ state.playerTurn - 1 ]} jumped: 
-    ${startPos} to ${targetPos}. `
-
+// Turn messages
 const startMessage = (icons) => `Player ${getPlayerIcon(icons)(1)} turn`
-
+const playerTurnMessage = (icons, playerTurn) => `Player ${getPlayerIcon(icons)(playerTurn)} turn`
 const gameOverMessage = 'Game Over!'
 
-export { playerTurnMessage, jumpingMessage, startMessage, gameOverMessage, getPlayerIcon }
+export { playerTurnMessage, jumpingMessage, startMessage, gameOverMessage, getPlayerIcon, walkingMessage }

@@ -30,7 +30,9 @@ const createInitState = (icons = [ '💩', '💎' ]) => {
     board: START_BOARD,
     playerTurn: 1,
     endTurnAllowed: false,
-    message: startMessage(icons),
+
+    moveMessage: '',
+    turnMessage: startMessage(icons),
 
     selectedCell: undefined,
     validTargets: {

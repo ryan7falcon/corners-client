@@ -26,7 +26,6 @@ function move(state, target) {
   return {
     ...JSON.parse(JSON.stringify(state)),
     board: updateBoard(state.board, state.playerTurn, startPos, targetPos),
-    message: jumpingMessage(state, startPos, targetPos),
     actionsHistory: [ ...state.actionsHistory, [ startPos, targetPos ] ],
     endTurnAllowed: true
   }

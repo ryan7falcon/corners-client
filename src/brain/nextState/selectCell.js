@@ -2,6 +2,7 @@ import { move } from './move'
 import { endTurn } from './endTurn'
 import { updateValidTargets } from './updateValidTargets'
 import { isTargetEmpty, isOwnTarget, allowedToSelectAnother, allowedToDeselect, isValidWalk, isValidJump } from '../checks'
+import { walkingMessage, jumpingMessage } from './messages'
 
 // clear selection
 function deselect(state) {
@@ -21,12 +22,18 @@ function select(state, target) {
 
 // make a walk move
 const walk = (state, target) => {
-  return endTurn(move(state, target))
+  return endTurn({
+    ...move(state, target),
+    moveMessage: walkingMessage(state, target)
+  })
 }
 
 // make a jump move
 const jump = (state, target) => {
-  return select(move(state, target), target)
+  return select({
+    ...move(state, target),
+    moveMessage: jumpingMessage(state, target)
+  }, target)
 }
 
 // triage move - walk, jump, nothing

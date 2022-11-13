@@ -74,7 +74,8 @@ function App() {
           <div className={classes.gameColumn}>
             <DisplayState state={game} />
 
-            <div className={classes.message}>{game.message}</div>
+            <div className={classes.message}>{game.moveMessage}</div>
+            <div className={classes.message}>{game.turnMessage}</div>
 
             <div id='allowed-moves' />
 
