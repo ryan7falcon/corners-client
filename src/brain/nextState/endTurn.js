@@ -29,18 +29,12 @@ const WIN_MASK = [ ONE_WIN_MASK, TWO_WIN_MASK ]
 function checkPlayerWin(board, player) {
   for (const [ i, row ] of board.entries()) {
     for (const [ j, el ] of row.entries()) {
-      if (el === player) {
-        if (el !== WIN_MASK[ player - 1 ][ i ][ j ]) {
-          return false
-        }
+      if (el === player && el !== WIN_MASK[ player - 1 ][ i ][ j ]) {
+        return false
       }
     }
   }
   return true
-}
-
-function checkWin(board) {
-  return checkPlayerWin(board, 1) || checkPlayerWin(board, 2)
 }
 
 const getOtherPlayer = (playerTurn) => playerTurn === 2 ? 1 : 2
@@ -89,7 +83,7 @@ function endTurn(state) {
   // if first player already finished
   if (state.winnerFinished) {
     update = looserFinishing(state)
-  } else if (checkWin(state.board)) {
+  } else if (checkPlayerWin(state.board, state.playerTurn)) {
     // if winner just finished
     update = winnerJustFinished(state)
   } else {

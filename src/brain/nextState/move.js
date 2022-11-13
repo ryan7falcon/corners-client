@@ -3,13 +3,13 @@ import { isTargetEmpty, isOwnTarget } from '../checks'
 import { validateState, validateStartAndTargetPos } from '../validateStateAndTarget'
 import { jumpingMessage } from './messages'
 
-const updateBoard = (state, startPos, targetPos) => {
-  const newBoard = JSON.parse(JSON.stringify(state.board))
+const updateBoard = (board, playerTurn, startPos, targetPos) => {
+  const newBoard = JSON.parse(JSON.stringify(board))
 
   const [ x, y ] = startPos
   const [ newX, newY ] = targetPos
 
-  newBoard[ newX ][ newY ] = state.playerTurn
+  newBoard[ newX ][ newY ] = playerTurn
   newBoard[ x ][ y ] = 0
 
   return newBoard
@@ -25,7 +25,7 @@ function move(state, target) {
 
   return {
     ...JSON.parse(JSON.stringify(state)),
-    board: updateBoard(state, startPos, targetPos),
+    board: updateBoard(state.board, startPos, targetPos),
     message: jumpingMessage(state, startPos, targetPos),
     actionsHistory: [ ...state.actionsHistory, [ startPos, targetPos ] ],
     endTurnAllowed: true
