@@ -1,4 +1,4 @@
-import { gameBrain, createInitState, moveAction, selectCellAction, endTurnAction } from './Game'
+import { gameBrain, createInitState, selectCellAction, endTurnAction } from './Game'
 
 // =============== SELECT CELL =================
 describe('selectCellAction', () => {
@@ -6,11 +6,11 @@ describe('selectCellAction', () => {
   test('move: valid', () => {
     const state = createInitState()
 
-    const target1 = { rowIndex: 6, columnIndex: 0, piece: 1 }
+    const target1 = { position: [ 6, 0 ], piece: 1 }
     const selectedState = gameBrain(state, selectCellAction(target1))
 
     const target2 = {
-      rowIndex: 4, columnIndex: 2, piece: 0
+      position: [ 4, 2 ], piece: 0
     }
     const endState = gameBrain(selectedState, selectCellAction(target2))
 
@@ -29,9 +29,9 @@ describe('selectCellAction', () => {
 
   test('move: walking must force end of turn', () => {
     const state = createInitState()
-    const target1 = { rowIndex: 4, columnIndex: 0, piece: 1 }
+    const target1 = { position: [ 4, 0 ], piece: 1 }
     const selectedState = gameBrain(state, selectCellAction(target1))
-    const target2 = { rowIndex: 4, columnIndex: 1, piece: 0 }
+    const target2 = { position: [ 4, 1 ], piece: 0 }
 
     const endState = gameBrain(selectedState, selectCellAction(target2))
 
@@ -44,7 +44,7 @@ describe('selectCellAction', () => {
   test('must not select null cells', () => {
     const state = createInitState()
     const target = {
-      rowIndex: 0, columnIndex: 0, piece: 0
+      position: [ 0, 0 ], piece: 0
     }
 
     expect(gameBrain(state, selectCellAction(target))
@@ -54,7 +54,7 @@ describe('selectCellAction', () => {
   test('must not select pieces of other player', () => {
     const state = createInitState()
     const target = {
-      rowIndex: 0, columnIndex: 7, piece: 2
+      position: [ 0, 7 ], piece: 2
     }
 
     expect(gameBrain(state, selectCellAction(target))
@@ -157,11 +157,11 @@ describe('Testing End Turn', () => {
     ]
     state.actionsHistory = [ [ [ 6, 0 ], [ 4, 2 ] ] ]
     const target1 = {
-      rowIndex: 3, columnIndex: 6, piece: 1
+      position: [ 3, 6 ], piece: 1
     }
     const selectedState = gameBrain(state, selectCellAction(target1))
     const target2 = {
-      rowIndex: 2, columnIndex: 6, piece: 0
+      position: [ 2, 6 ], piece: 0
     }
 
     expect(gameBrain(selectedState, selectCellAction(target2))
@@ -188,11 +188,11 @@ describe('Testing End Turn', () => {
     ]
     state.actionsHistory = [ [ [ 6, 0 ], [ 4, 2 ] ] ]
     const target1 = {
-      rowIndex: 2, columnIndex: 5, piece: 1
+      position: [ 2, 5 ], piece: 1
     }
     const selectedState = gameBrain(state, selectCellAction(target1))
     const target2 = {
-      rowIndex: 0, columnIndex: 7, piece: 0
+      position: [ 0, 7 ], piece: 0
     }
     const jumpedState = gameBrain(selectedState, selectCellAction(target2))
 
@@ -223,11 +223,11 @@ describe('Testing End Turn', () => {
     state.playerTurn = 2
 
     const target1 = {
-      rowIndex: 4, columnIndex: 2, piece: 2
+      position: [ 4, 2 ], piece: 2
     }
     const selectedState = gameBrain(state, selectCellAction(target1))
     const target2 = {
-      rowIndex: 5, columnIndex: 2, piece: 0
+      position: [ 5, 2 ], piece: 0
     }
 
     expect(gameBrain(selectedState, selectCellAction(target2))
@@ -258,18 +258,18 @@ describe('Testing End Turn', () => {
     state.playerTurn = 2
 
     const target1 = {
-      rowIndex: 4, columnIndex: 2, piece: 2
+      position: [ 4, 2 ], piece: 2
     }
     const selectedState = gameBrain(state, selectCellAction(target1))
     const target2 = {
-      rowIndex: 5, columnIndex: 2, piece: 0
+      position: [ 5, 2 ], piece: 0
     }
 
     expect(gameBrain(selectedState, selectCellAction(target2))
     ).toEqual(expect.objectContaining({
       score: 1,
       winnerFinished: true,
-      looserFinished: false
+      loserFinished: false
     }))
   })
 
@@ -291,30 +291,29 @@ describe('Testing End Turn', () => {
     state.playerTurn = 2
 
     const target1 = {
-      rowIndex: 4, columnIndex: 2, piece: 2
+      position: [ 4, 2 ], piece: 2
     }
     const selectedState = gameBrain(state, selectCellAction(target1))
     const target2 = {
-      rowIndex: 5, columnIndex: 2, piece: 0
+      position: [ 5, 2 ], piece: 0
     }
     const unfinishedState = gameBrain(selectedState, selectCellAction(target2))
     const target3 = {
-      rowIndex: 5, columnIndex: 2, piece: 2
+      position: [ 5, 2 ], piece: 2
     }
     const unfinishedSelectedState = gameBrain(unfinishedState, selectCellAction(target3))
     const target4 = {
-      rowIndex: 6, columnIndex: 2, piece: 0
+      position: [ 6, 2 ], piece: 0
     }
-    const finsishedState = gameBrain(unfinishedSelectedState, selectCellAction(target4)
-    // should add to the score and change looserFinished state to true
-    expect(finsishedState)
-    ).toEqual(expect.objectContaining({
+    const finsishedState = gameBrain(unfinishedSelectedState, selectCellAction(target4))
+    // should add to the score and change loserFinished state to true
+    expect(finsishedState).toEqual(expect.objectContaining({
       score: 2,
       winnerFinished: true,
-      looserFinished: true
+      loserFinished: true
     }))
     const target5 = {
-      rowIndex: 7, columnIndex: 0, piece: 2
+      position: [ 7, 0 ], piece: 2
     }
     // should not allow selection anymore - game is over
     expect(gameBrain(finsishedState, selectCellAction(target5))
@@ -322,7 +321,7 @@ describe('Testing End Turn', () => {
       selectedCell: undefined,
       score: 2,
       winnerFinished: true,
-      looserFinished: true
+      loserFinished: true
     }))
   })
 })

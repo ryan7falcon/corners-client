@@ -48,7 +48,7 @@ const looserFinishing = (state) => {
   // check if looser finished
   if (checkPlayerWin(state.board, state.playerTurn)) {
     result.message = gameOverMessage
-    result.looserFinished = true
+    result.loserFinished = true
   } else {
     result.message = playerTurnMessage(state.icons, state.playerTurn)
   }

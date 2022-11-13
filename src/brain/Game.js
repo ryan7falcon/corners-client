@@ -25,21 +25,23 @@ const createInitState = (icons = [ '💩', '💎' ]) => {
   //   [ 2, 2, 2, 2, 0, 0, 0, 0 ]
   // ]
   return {
+    icons,
+    actionsHistory: [],
     board: START_BOARD,
     playerTurn: 1,
     endTurnAllowed: false,
-    win: 0,
-    winnerFinished: false,
-    actionsHistory: [],
-    icons,
     message: startMessage(icons),
+
     selectedCell: undefined,
-    score: 0,
-    looserFinished: false,
     validTargets: {
       walks: {},
       jumps: {}
-    }
+    },
+
+    winnerFinished: false,
+    win: 0,
+    loserFinished: false,
+    score: 0,
   }
 }
 

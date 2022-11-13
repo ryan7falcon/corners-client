@@ -78,7 +78,7 @@ function App() {
 
             <div id='allowed-moves' />
 
-            {game.looserFinished
+            {game.loserFinished
               ? <RestartGameBtn handleRestartGame={handleRestartGame} />
               : <EndTurnBtn
                 endTurnAllowed={game.endTurnAllowed}

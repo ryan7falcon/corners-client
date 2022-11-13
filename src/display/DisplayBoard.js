@@ -23,8 +23,6 @@ const useStyles = createUseStyles({
   }
 
 })
-// TODO: add row and column indecies (chessboard notation)
-// TODO: make icons non-selectable as text
 function DisplayBoard({ state, handleSelectCell }) {
   const classes = useStyles()
   return (

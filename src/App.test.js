@@ -20,7 +20,7 @@ test('Clicking on a cell updates valid moves', () => {
   // the component calls setState and re-renders.
   // `waitFor` waits until the callback doesn't throw an error
 
-  expect(screen.getByTestId('cell-4-2').className).toContain('validTargetCell')
+  expect(screen.getByTestId('cell-4-2').className).toContain('validTargetJump')
 })
 
 test('jumping preserves selection of the cell', () => {
@@ -30,7 +30,7 @@ test('jumping preserves selection of the cell', () => {
   // target becomes new selected piece
   expect(screen.getByTestId('cell-4-2').className).toContain('selectedCell')
   // old start becomes new valid target
-  expect(screen.getByTestId('cell-6-0').className).toContain('validTargetCell')
+  expect(screen.getByTestId('cell-6-0').className).toContain('validTargetJump')
 })
 
 test('End turn deselects the cell', () => {
