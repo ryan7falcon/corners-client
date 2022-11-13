@@ -1,4 +1,5 @@
 import { createUseStyles } from 'react-jss'
+import { trace } from '../util'
 
 const useStyles = createUseStyles({
   cell: {
@@ -10,8 +11,16 @@ const useStyles = createUseStyles({
     alignItems: 'center',
     border: '1px solid #555',
     position: 'relative',
-    transition: 'all 1000ms cubic-bezier(0.19, 1, 0.22, 1)',
+    userSelect: 'none'
+  },
+  selectedCell: {
+    extend: 'cell',
+    background: 'rgba(255,255,255,0.1)'
+  },
+  selectableTarget: {
+    extend: 'cell',
     cursor: 'pointer',
+    transition: 'all 1000ms cubic-bezier(0.19, 1, 0.22, 1)',
     '&:hover': {
       '&:after': {
         left: '120%',
@@ -33,53 +42,50 @@ const useStyles = createUseStyles({
       fontSize: 'calc(10px + 4vmin)'
     }
   },
-  selectedCell: {
-    extend: 'cell',
-    background: 'rgba(255,255,255,0.1)',
-    '&:after': {
-      transition: 'none'
-    },
-    '&:hover': {
-      '&:after': {
-        transition: 'none'
-      }
-    }
+  selectedCellDeselectable: {
+    extend: 'selectableTarget',
+    background: 'rgba(255,255,255,0.1)'
   },
   validTargetWalk: {
-    extend: 'cell',
+    extend: 'selectableTarget',
     background: 'rgba(255,255,0,0.2)'
   },
   validTargetJump: {
-    extend: 'cell',
+    extend: 'selectableTarget',
     background: 'rgba(0,255,0,0.2)'
   }
 
 })
 
 function Cell({
-  x,
   handleSelect,
   state,
-  rowIndex,
-  columnIndex,
+  target,
   isSelected,
   isValidWalk,
-  isValidJump }) {
+  isValidJump,
+  isOwnCell,
+  canDeselect }) {
   const classes = useStyles()
   return (
     <div
-      data-testid={`cell-${rowIndex}-${columnIndex}`}
-      className={isSelected
-        ? classes.selectedCell
-        : isValidWalk
-          ? classes.validTargetWalk
-          : isValidJump
-            ? classes.validTargetJump
-            : classes.cell}
-      key={columnIndex}
-      onClick={(e) => { handleSelect(rowIndex, columnIndex, x) }}
+      data-testid={`cell-${target.position[ 0 ]}-${target.position[ 1 ]}`}
+      className={
+        canDeselect
+          ? classes.selectedCellDeselectable
+          : isSelected
+            ? classes.selectedCell
+            : isOwnCell
+              ? classes.selectableTarget
+              : isValidWalk
+                ? classes.validTargetWalk
+                : isValidJump
+                  ? classes.validTargetJump
+                  : classes.cell}
+      key={target.position[ 0 ]}
+      onClick={(e) => { handleSelect(target) }}
     >
-      {state.getIcon(x)}
+      {state.getIcon(target.piece)}
     </div>
   )
 }

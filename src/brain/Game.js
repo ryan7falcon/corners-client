@@ -48,27 +48,12 @@ const createInitState = (icons = [ '💩', '💎' ]) => {
 }
 
 const actions = {
-  move: 'MOVE',
   endTurn: 'END_TURN',
   selectCell: 'SELECT_CELL',
   restart: 'RESTART'
 }
 
 // actions
-function moveAction(startPos, targetPos, isWalk) {
-  return {
-    // move action
-    type: actions.move,
-    payload: {
-      move: {
-        startPos,
-        targetPos,
-        isWalk
-      }
-    }
-  }
-}
-
 function endTurnAction() {
   return {
     // end turn action
@@ -77,13 +62,7 @@ function endTurnAction() {
   }
 }
 
-function selectCellAction({
-  rowIndex, columnIndex, piece
-}) {
-  const target = {
-    position: [ rowIndex, columnIndex ],
-    piece
-  }
+function selectCellAction(target) {
   return {
     type: actions.selectCell,
     payload: {
@@ -100,13 +79,6 @@ const restartGameAction = () => {
 // reducer
 function gameBrain(state, action) {
   switch (action.type) {
-    // MOVE
-    case actions.move: {
-      return move(state,
-        action.payload.move.startPos,
-        action.payload.move.targetPos,
-        action.payload.move.isWalk)
-    }
     // END_TURN
     case actions.endTurn: {
       return endTurn(state)
@@ -125,4 +97,4 @@ function gameBrain(state, action) {
   }
 }
 
-export { endTurnAction, moveAction, selectCellAction, restartGameAction, gameBrain, createInitState }
+export { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState }

@@ -1,6 +1,6 @@
 import { createUseStyles } from 'react-jss'
-import { positionIsInArray, arrayEquals } from '../util'
-import { isValidWalk, isValidJump } from '../brain/checks'
+import { positionIsInArray, arrayEquals, trace } from '../util'
+import { isValidWalk, isValidJump, allowedToDeselect, isSelected, isOwnTarget } from '../brain/checks'
 import Cell from './Cell'
 
 const useStyles = createUseStyles({
@@ -41,13 +41,13 @@ function DisplayBoard({ state, handleSelectCell }) {
                 return <Cell
                   state={state}
                   handleSelect={handleSelectCell}
-                  x={x}
-                  columnIndex={columnIndex}
-                  rowIndex={rowIndex}
-                  key={[ rowIndex, columnIndex ]}
-                  isSelected={!!state.selectedCell && (arrayEquals(state.selectedCell.position, [ rowIndex, columnIndex ]))}
+                  target={target}
+                  key={target.position}
+                  isSelected={isSelected(state, target)}
                   isValidWalk={isValidWalk(state, target)}
                   isValidJump={isValidJump(state, target)}
+                  isOwnCell={isOwnTarget(state, target)}
+                  canDeselect={allowedToDeselect(state, target)}
                 />
               })}
             </div>

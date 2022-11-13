@@ -53,26 +53,17 @@ function App() {
 
   const [ game, dispatch ] = useReducer(gameBrain, createInitState(icons))
 
-  // TODO: only allow hover effect on own cells
   // TODO: number the rows and columns as on a chessboard
   // TODO: create server-client app with socket connections
   // TODO: export turn history to a file
   // TODO: tutorial
 
   // params: row, column and piece (1- for player 1, 2 - for player 2, 0 - for empty spot) of the target (intention to switch selection)
-  const handleSelectCell = (rowIndex, columnIndex, piece) => {
-    dispatch(selectCellAction({
-      rowIndex, columnIndex, piece
-    }))
-  }
+  const handleSelectCell = (target) => dispatch(selectCellAction(target))
 
-  const handleEndTurn = () => {
-    dispatch(endTurnAction())
-  }
+  const handleEndTurn = () => dispatch(endTurnAction())
 
-  const handleRestartGame = () => {
-    dispatch(restartGameAction())
-  }
+  const handleRestartGame = () => dispatch(restartGameAction())
 
   return (
     <div className={classes.app}>
