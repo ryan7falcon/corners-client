@@ -24,7 +24,6 @@ function move(state, target) {
   newState.message = jumpingMessage(newState, startPos, targetPos)
   newState.actionsHistory.push([ startPos, targetPos ])
   newState.endTurnAllowed = true
-  console.log('action history', newState.actionsHistory)
   return newState
 }
 
