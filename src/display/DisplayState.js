@@ -1,5 +1,5 @@
 import { createUseStyles } from 'react-jss'
-import { getPlayerIcon } from '../brain/Game'
+import { getPlayerIcon } from '../brain/nextState/messages'
 
 const useStyles = createUseStyles({
   propertyContainer: {

@@ -26,8 +26,8 @@ const TWO_WIN_MASK = [
 
 const WIN_MASK = [ ONE_WIN_MASK, TWO_WIN_MASK ]
 
-function checkPlayer(state, player) {
-  for (const [ i, row ] of state.board.entries()) {
+function checkPlayerWin(board, player) {
+  for (const [ i, row ] of board.entries()) {
     for (const [ j, el ] of row.entries()) {
       if (el === player) {
         if (el !== WIN_MASK[ player - 1 ][ i ][ j ]) {
@@ -39,50 +39,65 @@ function checkPlayer(state, player) {
   return true
 }
 
-function checkWin(state) {
-  return checkPlayer(state, 1) || checkPlayer(state, 2)
+function checkWin(board) {
+  return checkPlayerWin(board, 1) || checkPlayerWin(board, 2)
 }
 
-const switchPlayer = (playerTurn) => playerTurn === 2 ? 1 : 2
+const getOtherPlayer = (playerTurn) => playerTurn === 2 ? 1 : 2
+
+const looserFinishing = (state) => {
+  const score = state.score + 1
+  const result = {
+    endTurnAllowed: false,
+    score
+  }
+  // check if looser finished
+  if (checkPlayerWin(state.board, state.playerTurn)) {
+    result.message = gameOverMessage
+    result.looserFinished = true
+  } else {
+    result.message = playerTurnMessage(state.icons, state.playerTurn)
+  }
+  return result
+}
+
+const winnerJustFinished = (state) => ({
+  endTurnAllowed: false,
+  winnerFinished: true,
+  win: state.playerTurn,
+  playerTurn: getOtherPlayer(state.playerTurn),
+  message: playerTurnMessage(state.icons, state.playerTurn)
+})
+
+const switchTurnsAndMessage = (state) => {
+  const nextPlayer = getOtherPlayer(state.playerTurn)
+  return {
+    endTurnAllowed: false,
+    playerTurn: nextPlayer,
+    message: playerTurnMessage(state.icons, nextPlayer)
+  }
+}
 
 // Get next state: end turn
 function endTurn(state) {
   validateState(state)
-
-  const newState = JSON.parse(JSON.stringify(state))
-  if (newState.endTurnAllowed) {
-    // switch turns
-
-    newState.endTurnAllowed = false
-
-    // if first player already finished
-    if (newState.winnerFinished) {
-      newState.score += 1
-      // check if looser finished
-      if (checkPlayer(state, newState.playerTurn)) {
-        newState.message = gameOverMessage
-        newState.looserFinished = true
-      } else {
-        newState.message = playerTurnMessage(newState)
-      }
-
-    } else if (checkWin(newState)) {
-      // if winner just finished
-      newState.winnerFinished = true
-      newState.win = newState.playerTurn
-      newState.playerTurn = switchPlayer(newState.playerTurn)
-      newState.message = playerTurnMessage(newState)
-
-    } else {
-      // else game continues as normal 
-      newState.playerTurn = switchPlayer(newState.playerTurn)
-      newState.message = playerTurnMessage(newState)
-    }
-
-  } else {
+  if (!state.endTurnAllowed) {
     throw new Error('End Turn is not allowed')
   }
-  return deselect(newState)
+
+  let update = {}
+  // if first player already finished
+  if (state.winnerFinished) {
+    update = looserFinishing(state)
+  } else if (checkWin(state.board)) {
+    // if winner just finished
+    update = winnerJustFinished(state)
+  } else {
+    // else game continues as normal 
+    update = switchTurnsAndMessage(state)
+  }
+
+  return deselect({ ...JSON.parse(JSON.stringify(state)), ...update })
 }
 
 export { endTurn }

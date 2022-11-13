@@ -3,8 +3,6 @@ import { endTurn } from './nextState/endTurn'
 import { selectCell } from './nextState/selectCell'
 import { startMessage } from './nextState/messages'
 
-const getPlayerIcon = (icons) => (player) => (player === 1) ? icons[ 0 ] : (player === 2) ? icons[ 1 ] : ''
-
 const createInitState = (icons = [ '💩', '💎' ]) => {
   const START_BOARD = [
     [ 0, 0, 0, 0, 2, 2, 2, 2 ],
@@ -34,7 +32,7 @@ const createInitState = (icons = [ '💩', '💎' ]) => {
     winnerFinished: false,
     actionsHistory: [],
     icons,
-    message: startMessage(getPlayerIcon(icons)),
+    message: startMessage(icons),
     selectedCell: undefined,
     score: 0,
     looserFinished: false,
@@ -95,4 +93,4 @@ function gameBrain(state, action) {
   }
 }
 
-export { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState, getPlayerIcon }
+export { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState }
