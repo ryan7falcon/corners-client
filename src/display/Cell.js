@@ -1,5 +1,6 @@
 import { createUseStyles } from 'react-jss'
 import { trace } from '../util'
+import { getPlayerIcon } from '../brain/Game'
 
 const useStyles = createUseStyles({
   cell: {
@@ -85,7 +86,7 @@ function Cell({
       key={target.position[ 0 ]}
       onClick={(e) => { handleSelect(target) }}
     >
-      {state.getIcon(target.piece)}
+      {getPlayerIcon(state.icons)(target.piece)}
     </div>
   )
 }

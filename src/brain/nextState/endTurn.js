@@ -45,13 +45,11 @@ function checkWin(state) {
 
 const switchPlayer = (playerTurn) => playerTurn === 2 ? 1 : 2
 
-
-
 // Get next state: end turn
 function endTurn(state) {
   validateState(state)
 
-  const newState = { ...state, board: JSON.parse(JSON.stringify(state.board)), actionsHistory: [ ...state.actionsHistory ] }
+  const newState = JSON.parse(JSON.stringify(state))
   if (newState.endTurnAllowed) {
     // switch turns
 

@@ -1,7 +1,7 @@
 import { useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 
-import { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState, getIcon } from './brain/Game'
+import { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState } from './brain/Game'
 
 import DisplayState from './display/DisplayState'
 import DisplayBoard from './display/DisplayBoard'
