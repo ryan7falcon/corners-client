@@ -15,7 +15,6 @@ function getValidWalks(state) {
   if (!state.selectedCell) { return walks }
 
   const startPos = state.selectedCell.position
-  trace('startPos')(startPos)
   if (hasntJumpedYet(state)) {
     // add walk moves
     // It has to be an empty cell around startPos
