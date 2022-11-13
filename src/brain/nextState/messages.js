@@ -9,8 +9,8 @@ const walkingMessage = (state, target) => `Player ${getPlayerIcon(state.icons)(s
     ${getLocation(state.selectedCell.position)} to ${getLocation(target.position)}. `
 
 // Turn messages
-const startMessage = (icons) => `Player ${getPlayerIcon(icons)(1)} turn`
-const playerTurnMessage = (icons, playerTurn) => `Player ${getPlayerIcon(icons)(playerTurn)} turn`
+const startMessage = (icons) => `Player ${getPlayerIcon(icons)(1)} turn.`
+const playerTurnMessage = (icons, playerTurn) => `Player ${getPlayerIcon(icons)(playerTurn)} turn.`
 const gameOverMessage = 'Game Over!'
 
 export { playerTurnMessage, jumpingMessage, startMessage, gameOverMessage, getPlayerIcon, walkingMessage }
