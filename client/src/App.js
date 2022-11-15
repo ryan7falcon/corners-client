@@ -1,4 +1,4 @@
-import { useReducer } from 'react'
+import { useReducer, useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 
 import { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState } from './brain/Game'
@@ -64,10 +64,20 @@ function App() {
 
   const handleRestartGame = () => dispatch(restartGameAction())
 
+  // fetch from server
+  const [ data, setData ] = useState(null)
+
+  useEffect(() => {
+    fetch("/api")
+      .then((res) => res.json())
+      .then((data) => setData(data.message))
+  }, [])
+
   return (
     <div className={classes.app}>
       <header className={classes.appHeader}>
         <div className={classes.gameHeader}>Game of Corners  🚧 🛠  Under Construction ⚙ 🚧</div>
+        <p>{!data ? "Loading..." : data}</p>
         <div className={classes.gameContainer}>
           <DisplayBoard state={game} handleSelectCell={handleSelectCell} />
           <div className={classes.gameColumn}>
