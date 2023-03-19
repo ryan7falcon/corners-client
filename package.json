@@ -19,6 +19,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "repository": "git@github.com:ryan7falcon/corners-client.git",
+  "author": "Ryan Galimova <ryan7falcon@gmail.com>",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -39,6 +41,5 @@
     "env": [
       "jest"
     ]
-  },
-  "proxy": "http://localhost:3001"
+  }
 }
