@@ -66,7 +66,7 @@ function App() {
       <div className={classes.appContainer}>
         {userData.room
           ? <GameContainer socket={socket} userData={userData} icons={icons} /> : ''}
-        <Chat socket={socket} userData={userData} setUserData={setUserData} />
+        <Chat socket={socket} userData={userData} setUserData={setUserData} icons={icons} />
       </div>
     </div>
   )

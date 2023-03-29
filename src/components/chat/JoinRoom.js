@@ -13,7 +13,7 @@ const useStyles = createUseStyles({
   }
 })
 
-const JoinRoom = ({ socket, setJoinedRoom, username }) => {
+const JoinRoom = ({ socket, setUserData, userData, icons }) => {
   const [ roomValue, setRoomValue ] = useState('')
   const [ isLoading, setIsLoading ] = useState(false)
   const classes = useStyles()
@@ -21,10 +21,12 @@ const JoinRoom = ({ socket, setJoinedRoom, username }) => {
   const submitForm = (e) => {
     e.preventDefault()
     setIsLoading(true)
-    socket.timeout(5000).emit('join', { room: roomValue, username }, () => {
-      setIsLoading(false)
-      setJoinedRoom(roomValue)
-    })
+    socket.timeout(5000).emit('join',
+      { room: roomValue, username: userData.username, icons },
+      (err, res) => {
+        setIsLoading(false)
+        setUserData(res)
+      })
 
   }
 

@@ -18,7 +18,6 @@ const useStyles = createUseStyles({
     justifyContent: 'center',
     alignItems: 'start',
     flex: 3,
-    // paddingTop: 'calc(10px + 7vmin)'
   },
   message: {
     fontSize: 'calc(10px + 2vmin)',
@@ -39,7 +38,7 @@ const api = axios.create({
   baseURL: "http://localhost:3001"
 })
 
-export default function GameContainer({ socket, icons }) {
+export default function GameContainer({ socket, icons, userData }) {
 
   const [ state, dispatch ] = useReducer(gameBrain, { loading: false })
   // params: row, column and piece (1- for player 1, 2 - for player 2, 0 - for empty spot) of the target (intention to switch selection)
@@ -73,6 +72,7 @@ export default function GameContainer({ socket, icons }) {
   const classes = useStyles()
   return <div className={classes.gameContainer}>
     {/* <p>{!data ? "Loading message..." : data}</p> */}
+    <div>{userData.player}{userData.icon}{userData.username}</div>
     <>{
       state.loading || !state.game
         ? "Loading game..."

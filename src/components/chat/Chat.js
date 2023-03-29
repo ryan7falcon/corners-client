@@ -48,7 +48,7 @@ const useStyles = createUseStyles({
   }
 })
 
-export default function Chat({ socket, userData, setUserData }) {
+export default function Chat({ socket, userData, setUserData, icons }) {
 
   const [ isLoading, setIsLoading ] = useState(false)
   const classes = useStyles()
@@ -91,8 +91,9 @@ export default function Chat({ socket, userData, setUserData }) {
             {!userData.room
               ? <JoinRoom
                 socket={socket}
-                setJoinedRoom={setJoinedRoom}
-                username={userData.username} />
+                setUserData={setUserData}
+                userData={userData}
+                icons={icons} />
               : <div className={classes.room}>
                 <div className={classes.roomName}>{`You have joined room ${userData.room}`}</div>
                 <button onClick={leave} className={classes.leaveBtn} disabled={isLoading}>Leave the room</button>
