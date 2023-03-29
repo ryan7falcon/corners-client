@@ -1,18 +1,21 @@
 import { createUseStyles } from 'react-jss'
-import { trace } from '../util'
-import { getPlayerIcon } from '../brain/nextState/messages'
+import { trace } from '../../util'
+import { getPlayerIcon } from '../../brain/nextState/messages'
+
+const cellSize = 'calc(8vmin)'
 
 const useStyles = createUseStyles({
   cell: {
     overflow: 'hidden',
     display: 'flex',
-    width: 'calc(20px + 5vmin)',
-    height: 'calc(20px + 5vmin)',
+    width: cellSize,
+    height: cellSize,
     justifyContent: 'center',
     alignItems: 'center',
     border: '1px solid #555',
     position: 'relative',
-    userSelect: 'none'
+    userSelect: 'none',
+    fontSize: 'calc(5vmin)',
   },
   selectedCell: {
     extend: 'cell',
@@ -33,14 +36,14 @@ const useStyles = createUseStyles({
       content: "''",
       background: 'rgba(255,255,255,0.05)',
       zIndex: 10,
-      width: 'calc(20px + 5vmin)',
-      height: 'calc(20px + 5vmin)',
+      width: cellSize,
+      height: cellSize,
       top: '0',
-      left: 'calc(-20px - 5vmin)',
+      left: 'calc(-8vmin)',
       transition: 'all 1000ms cubic-bezier(0.19, 1, 0.22, 1)'
     },
     '&:active': {
-      fontSize: 'calc(10px + 4vmin)'
+      fontSize: 'calc(6vmin)'
     }
   },
   selectedCellDeselectable: {

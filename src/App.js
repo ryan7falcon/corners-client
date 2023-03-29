@@ -1,104 +1,73 @@
 import { useReducer, useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
+import io from 'socket.io-client'
 
-import { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState } from './brain/Game'
-
-import DisplayState from './display/DisplayState'
-import DisplayBoard from './display/DisplayBoard'
-import { EndTurnBtn, RestartGameBtn } from './display/Buttons'
+import Chat from './components/chat/Chat'
+import GameContainer from './components/game/GameContainer'
 import './App.css'
+
 
 const useStyles = createUseStyles({
   app: {
-    textAlign: 'center'
+    textAlign: 'center',
+    backgroundColor: '#282c34',
+    fontSize: 'calc(10px + 2vmin)',
+    color: 'white',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh',
+    overflow: 'auto'
   },
   appHeader: {
-    backgroundColor: '#282c34',
-    minHeight: '100vh',
-    fontSize: 'calc(10px + 2vmin)',
-    color: 'white'
+
+
   },
   gameHeader: {
     paddingTop: 'calc(10px + 7vmin)',
-    fontSize: 'calc(10px + 5vmin)'
+    marginBottom: 'calc(10px + 7vmin)',
+    fontSize: 'calc(10px + 3vmin)'
   },
-  gameContainer: {
+  appContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'start',
-    paddingTop: 'calc(10px + 7vmin)'
-  },
-  gameColumn: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  input: {
-    borderRadius: 10,
-    padding: 'calc(10px + 0vmin)',
-    fontSize: 'calc(10px + 1vmin)'
-  },
-  message: {
-    fontSize: 'calc(10px + 2vmin)',
-    margin: {
-      top: 'calc(10px + 2vmin)',
-      bottom: 'calc(10px + 2vmin)'
-    }
+    flex: 1,
+    // maxHeight: 'calc(100vh - 25vmin)'
+    overflow: 'auto'
   }
 })
 
 function App() {
   const classes = useStyles()
-  const icons = [ '💩', '💎' ]
 
-  const [ game, dispatch ] = useReducer(gameBrain, createInitState(icons))
+  const [ socket, setSocket ] = useState(null)
+  const [ userData, setUserData ] = useState({ username: null, room: null })
+
+  const icons = [ '💩', '💎' ]
+  // const icons = [ 'I', 'J' ]
 
   // TODO: create server-client app with socket connections
   // TODO: export turn history to a file
   // TODO: tutorial
 
-  // params: row, column and piece (1- for player 1, 2 - for player 2, 0 - for empty spot) of the target (intention to switch selection)
-  const handleSelectCell = (target) => dispatch(selectCellAction(target))
-
-  const handleEndTurn = () => dispatch(endTurnAction())
-
-  const handleRestartGame = () => dispatch(restartGameAction())
-
-  // fetch from server
-  const [ data, setData ] = useState(null)
-
   useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message))
-  }, [])
+    const newSocket = io(`http://${window.location.hostname}:3001`)
+    setSocket(newSocket)
+    return () => newSocket.close()
+  }, [ setSocket ])
 
   return (
     <div className={classes.app}>
       <header className={classes.appHeader}>
         <div className={classes.gameHeader}>Game of Corners  🚧 🛠  Under Construction ⚙ 🚧</div>
-        <p>{!data ? "Loading..." : data}</p>
-        <div className={classes.gameContainer}>
-          <DisplayBoard state={game} handleSelectCell={handleSelectCell} />
-          <div className={classes.gameColumn}>
-            <DisplayState state={game} />
-
-            <div className={classes.message}>{game.moveMessage}</div>
-            <div className={classes.message}>{game.turnMessage}</div>
-
-            <div id='allowed-moves' />
-
-            {game.loserFinished
-              ? <RestartGameBtn handleRestartGame={handleRestartGame} />
-              : <EndTurnBtn
-                endTurnAllowed={game.endTurnAllowed}
-                handleEndTurn={handleEndTurn}
-              />
-            }
-          </div>
-        </div>
-
       </header>
+      {!userData.room
+        ? <div>Please Join a room</div> : ''}
+      <div className={classes.appContainer}>
+        {userData.room
+          ? <GameContainer socket={socket} userData={userData} icons={icons} /> : ''}
+        <Chat socket={socket} userData={userData} setUserData={setUserData} />
+      </div>
     </div>
   )
 }

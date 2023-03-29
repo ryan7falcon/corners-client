@@ -1,9 +1,9 @@
 import { createUseStyles } from 'react-jss'
-import { positionIsInArray, arrayEquals, trace } from '../util'
-import { isValidWalk, isValidJump, allowedToDeselect, isSelected, isOwnTarget } from '../brain/checks'
+import { positionIsInArray, arrayEquals, trace } from '../../util'
+import { isValidWalk, isValidJump, allowedToDeselect, isSelected, isOwnTarget } from '../../brain/checks'
 import Cell from './Cell'
 import LocationLabel from './LocationLabel'
-import { letters, getNumber } from '../brain/notation'
+import { letters, getNumber } from '../../brain/notation'
 
 const useStyles = createUseStyles({
   boardContainer: {
@@ -11,7 +11,7 @@ const useStyles = createUseStyles({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 'calc(10px + 7vmin)'
+    marginRight: 'calc(10px + 1vmin)',
   },
 
   board: {

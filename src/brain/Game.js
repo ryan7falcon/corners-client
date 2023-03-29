@@ -1,59 +1,44 @@
+
+
 import { move } from './nextState/move'
 import { endTurn } from './nextState/endTurn'
 import { selectCell } from './nextState/selectCell'
 import { startMessage } from './nextState/messages'
-
-const createInitState = (icons = [ '💩', '💎' ]) => {
-  const START_BOARD = [
-    [ 0, 0, 0, 0, 2, 2, 2, 2 ],
-    [ 0, 0, 0, 0, 0, 2, 2, 2 ],
-    [ 0, 0, 0, 0, 0, 0, 2, 2 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 2 ],
-    [ 1, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 1, 1, 0, 0, 0, 0, 0, 0 ],
-    [ 1, 1, 1, 0, 0, 0, 0, 0 ],
-    [ 1, 1, 1, 1, 0, 0, 0, 0 ]
-  ]
-  // const START_BOARD = [
-  //   [ 0, 0, 0, 0, 1, 1, 1, 1 ],
-  //   [ 0, 0, 0, 0, 0, 1, 1, 1 ],
-  //   [ 0, 0, 0, 0, 0, 0, 0, 1 ],
-  //   [ 0, 0, 0, 0, 0, 0, 1, 1 ],
-  //   [ 2, 0, 0, 0, 0, 0, 0, 0 ],
-  //   [ 2, 2, 2, 0, 0, 0, 0, 0 ],
-  //   [ 2, 2, 0, 0, 0, 0, 0, 0 ],
-  //   [ 2, 2, 2, 2, 0, 0, 0, 0 ]
-  // ]
-  return {
-    icons,
-    actionsHistory: [],
-    board: START_BOARD,
-    playerTurn: 1,
-    endTurnAllowed: false,
-
-    moveMessage: '',
-    turnMessage: startMessage(icons),
-
-    selectedCell: undefined,
-    validTargets: {
-      walks: {},
-      jumps: {}
-    },
-
-    winnerFinished: false,
-    win: 0,
-    loserFinished: false,
-    score: 0,
-  }
-}
+import { restartGame } from './api'
 
 const actions = {
+  callAPI: 'CALL_API',
+  success: "SUCCESS",
+  error: "ERROR",
   endTurn: 'END_TURN',
   selectCell: 'SELECT_CELL',
   restart: 'RESTART'
 }
 
 // actions
+function callAPIAction() {
+  return {
+    // end turn action
+    type: actions.callAPI,
+    payload: {}
+  }
+}
+
+function successAction(game) {
+  return {
+    // end turn action
+    type: actions.success,
+    payload: { game }
+  }
+}
+function errorAction(error) {
+  return {
+    // end turn action
+    type: actions.success,
+    payload: { error }
+  }
+}
+
 function endTurnAction() {
   return {
     // end turn action
@@ -76,20 +61,51 @@ const restartGameAction = () => {
     payload: {}
   }
 }
+
 // reducer
 function gameBrain(state, action) {
   switch (action.type) {
+    case actions.callAPI: {
+      return {
+        ...state,
+        loading: true
+      }
+    }
+    case actions.success: {
+      return {
+        ...state,
+        game: action.payload.game,
+        loading: false,
+        error: undefined
+      }
+    }
+    case actions.error: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload.error
+      }
+    }
     // END_TURN
     case actions.endTurn: {
-      return endTurn(state)
+      return {
+        ...state,
+        game: endTurn(state)
+      }
     }
     // SELECT_CELL
     case actions.selectCell: {
-      return selectCell(state, action.payload.target)
+      return {
+        ...state,
+        game: selectCell(state, action.payload.target)
+      }
     }
     // RESTART
     case actions.restart: {
-      return createInitState(state.icons)
+      return {
+        ...state,
+        game: restartGame(state.icons)
+      }
     }
     default: {
       return state
@@ -97,4 +113,4 @@ function gameBrain(state, action) {
   }
 }
 
-export { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState }
+export { callAPIAction, successAction, errorAction, endTurnAction, selectCellAction, restartGameAction, gameBrain }
