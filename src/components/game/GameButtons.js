@@ -12,7 +12,8 @@ const useStyles = createUseStyles({
 
   endTurnBtn: {
     extend: 'btn',
-    background: 'tomato'
+    background: 'tomato',
+    marginBottom: '20px',
   },
 
   restartBtn: {

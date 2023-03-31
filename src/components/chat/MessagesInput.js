@@ -14,7 +14,8 @@ const useStyles = createUseStyles({
   messageForm: {
     display: 'flex',
     justifyContent: 'center',
-    paddingTop: '20px',
+    marginBottom: '20px',
+    width: '100%',
   },
   messageInput: {
     flex: 1

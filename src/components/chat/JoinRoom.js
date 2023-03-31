@@ -30,7 +30,8 @@ const JoinRoom = ({ socket, setUserData, userData, icons }) => {
 
   }
 
-  return (
+  return socket && userData.username && !userData.room
+    ?
     <form onSubmit={submitForm}>
       <input
         autoFocus
@@ -43,7 +44,7 @@ const JoinRoom = ({ socket, setUserData, userData, icons }) => {
       />
       <button className={classes.joinBtn} type="submit" disabled={isLoading}>Submit</button>
     </form>
-  )
+    : ''
 }
 
 export default JoinRoom

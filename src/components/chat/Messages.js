@@ -27,6 +27,7 @@ const useStyles = createUseStyles({
     flex: 1,
     backgroundColor: 'rgba(255,255,255,0.03)',
     borderRadius: '20px',
+    width: '100%',
   },
   messageList: {
     maxWidth: '100%',
@@ -88,8 +89,10 @@ function Messages({ socket }) {
   return (
     <div className={classes.messageListContainer}>
       <div className={classes.messageList} >
+        <div ref={mainRef} />
         {[ ...Object.values(messages) ]
           .sort((a, b) => a.time - b.time)
+          .reverse()
           .map((message) => (
             <div
               key={message.id}
@@ -102,7 +105,7 @@ function Messages({ socket }) {
             </div>
           ))
         }
-        <div ref={mainRef} />
+
       </div>
     </div>
   )

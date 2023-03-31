@@ -18,6 +18,7 @@ const useStyles = createUseStyles({
     justifyContent: 'center',
     alignItems: 'start',
     flex: 3,
+    flexWrap: 'wrap',
   },
   message: {
     fontSize: 'calc(10px + 2vmin)',
@@ -70,36 +71,37 @@ export default function GameContainer({ socket, icons, userData }) {
 
 
   const classes = useStyles()
-  return <div className={classes.gameContainer}>
-    {/* <p>{!data ? "Loading message..." : data}</p> */}
-    <div>{userData.player}{userData.icon}{userData.username}</div>
-    <>{
-      state.loading || !state.game
-        ? "Loading game..."
-        : state.error
-          ? "There was an error"
-          : <>
-            <div className={classes.gameColumn}>
-              <DisplayState state={state.game} />
+  return userData.room
+    ? <div className={classes.gameContainer}>
+      {/* <p>{!data ? "Loading message..." : data}</p> */}
+      {/* <div>{userData.player}{userData.icon}{userData.username}</div> */}
+      <>{
+        state.loading || !state.game
+          ? "Loading game..."
+          : state.error
+            ? "There was an error"
+            : <>
+              <div className={classes.gameColumn}>
+                <DisplayState state={state.game} />
 
-              <div className={classes.message}>{state.game.moveMessage}</div>
-              <div className={classes.message}>{state.game.turnMessage}</div>
+                <div className={classes.message}>{state.game.moveMessage}</div>
+                <div className={classes.message}>{state.game.turnMessage}</div>
 
-              <div id='allowed-moves' />
+                <div id='allowed-moves' />
 
-              {state.game.loserFinished
-                ? <RestartGameBtn handleRestartGame={handleRestartGame} />
-                : <EndTurnBtn
-                  endTurnAllowed={state.game.endTurnAllowed}
-                  handleEndTurn={handleEndTurn}
-                />
-              }
-            </div>
+                {state.game.loserFinished
+                  ? <RestartGameBtn handleRestartGame={handleRestartGame} />
+                  : <EndTurnBtn
+                    endTurnAllowed={state.game.endTurnAllowed}
+                    handleEndTurn={handleEndTurn}
+                  />
+                }
+              </div>
 
-            <DisplayBoard state={state.game} handleSelectCell={handleSelectCell} />
-          </>
-    }
-    </>
-  </div>
+              <DisplayBoard state={state.game} handleSelectCell={handleSelectCell} />
+            </>
+      }
+      </>
+    </div> : ''
 }
 
