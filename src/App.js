@@ -5,12 +5,14 @@ import io from 'socket.io-client'
 import Chat from './components/chat/Chat'
 import GameContainer from './components/game/GameContainer'
 import JoinRoom from './components/chat/JoinRoom'
+import CreateRoom from './components/chat/CreateRoom'
 import EnterUsername from './components/chat/EnterUsername'
+import DisplayError from './components/chat/DisplayError'
 
 import './App.css'
 import ManageRoom from './components/chat/ManageRoom'
 import ManageUsername from './components/chat/ManageUsername'
-
+import { socket } from './socket'
 
 const useStyles = createUseStyles({
   app: {
@@ -37,7 +39,6 @@ const useStyles = createUseStyles({
     flexDirection: 'row',
     justifyContent: 'center',
     flex: 1,
-    // maxHeight: 'calc(100vh - 25vmin)'
     flexWrap: 'wrap',
   },
   enterUserDatacontainer: {
@@ -53,28 +54,28 @@ const useStyles = createUseStyles({
 function App() {
   const classes = useStyles()
 
-  const [ socket, setSocket ] = useState(null)
-  const [ userData, setUserData ] = useState({ username: null, room: null })
+  const [ userData, setUserData ] = useState({ username: null, roomId: null })
   const [ isLoading, setIsLoading ] = useState(false)
+  const [ error, setError ] = useState(undefined)
   const [ showChangeUsername, setShowChangeUsername ] = useState(true)
 
-  const setUsername = (newUserName) => {
-    setUserData({
-      ...userData,
-      username: newUserName
-    })
-    if (userData.room) {
+  const setUsername = (newName) => {
+    if (userData.roomId) {
       setIsLoading(true)
-      socket.timeout(5000).emit('changeName', newUserName, () => {
+      socket.timeout(5000).emit('changeName', { player: userData, newName }, () => {
         setIsLoading(false)
       })
     }
+    setUserData({
+      ...userData,
+      username: newName
+    })
   }
 
   const setJoinedRoom = (newRoom) => {
     setUserData({
       ...userData,
-      room: newRoom
+      roomId: newRoom
     })
   }
 
@@ -90,38 +91,81 @@ function App() {
   // const icons = [ 'I', 'J' ]
 
   // TODO: create server-client app with socket connections
-  // TODO: generate room code for the first person to Join
-  // TODO: separate derver logic from DB storage logic
-  // TODO: save users and games by room
+  // TODO: only allow to play your own turn
+  // TODO: separate server logic from DB storage logic
   // TODO: reconnect to lost session
-  // TODO: make the FE mobile friendly
   // TODO: export turn history to a file
   // TODO: tutorial
+  // TODO: unify font sizes
+  // TODO: Display who is in the room
+  // TODO: hot seat play
+  // TODO: collapse chat
+
+
 
   useEffect(() => {
-    const newSocket = io(`http://${window.location.hostname}:3001`)
-    setSocket(newSocket)
-    return () => newSocket.close()
-  }, [ setSocket ])
+    const handleRoomData = (roomData) => {
+      console.log('roomData', roomData)
+    }
+
+    socket.on('roomData', handleRoomData)
+
+    return () => {
+      socket.off('roomData', handleRoomData)
+    }
+  }, [])
 
   return (
     <div className={classes.app}>
       <header className={classes.appHeader}>
         <div className={classes.gameHeader}>Game of Corners  🚧 🛠  Under Construction ⚙ 🚧</div>
-        <ManageUsername username={userData.username} setUsername={setUsername} isLoading={isLoading} setIsLoading={setIsLoading} showChangeUsername={showChangeUsername} setShowChangeUsername={setShowChangeUsername} />
-        <ManageRoom room={userData.room} leave={leave} isLoading={isLoading} />
+        <ManageUsername
+          username={userData.username}
+          setUsername={setUsername}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          showChangeUsername={showChangeUsername}
+          setShowChangeUsername={setShowChangeUsername} />
+        <ManageRoom
+          room={userData.roomId}
+          leave={leave}
+          isLoading={isLoading} />
       </header>
-      <div className={classes.enterUserDatacontainer} hidden={userData.room}>
-        {!userData.username ? <EnterUsername username={userData.username} setUsername={setUsername} isLoading={isLoading} setIsLoading={setIsLoading} setShowChangeUsername={setShowChangeUsername} /> : ''}
+      <div className={classes.enterUserDatacontainer} hidden={userData.roomId}>
+        {!userData.username
+          ? <EnterUsername
+            username={userData.username}
+            setUsername={setUsername}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            setShowChangeUsername={setShowChangeUsername} />
+          : ''}
+        <DisplayError error={error} />
         <JoinRoom
+          socket={socket}
+          setUserData={setUserData}
+          userData={userData}
+          icons={icons}
+          setError={setError} /> or
+        <CreateRoom
           socket={socket}
           setUserData={setUserData}
           userData={userData}
           icons={icons} />
       </div>
       <div className={classes.appContainer}>
-        <GameContainer socket={socket} userData={userData} icons={icons} />
-        <Chat socket={socket} userData={userData} setUserData={setUserData} icons={icons} isLoading={isLoading} setIsLoading={setIsLoading} />
+        {userData.roomId ?
+          <GameContainer
+            socket={socket}
+            userData={userData}
+            icons={icons} /> : ''}
+        <Chat
+          socket={socket}
+          userData={userData}
+          setUserData={setUserData}
+          icons={icons}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading} />
       </div>
     </div>
   )

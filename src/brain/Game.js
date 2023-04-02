@@ -90,14 +90,14 @@ function gameBrain(state, action) {
     case actions.endTurn: {
       return {
         ...state,
-        game: endTurn(state)
+        game: endTurn(state.game)
       }
     }
     // SELECT_CELL
     case actions.selectCell: {
       return {
         ...state,
-        game: selectCell(state, action.payload.target)
+        game: selectCell(state.game, action.payload.target)
       }
     }
     // RESTART

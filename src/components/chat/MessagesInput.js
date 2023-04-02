@@ -22,7 +22,7 @@ const useStyles = createUseStyles({
   }
 
 })
-const NewMessage = ({ socket, isLoading, setIsLoading }) => {
+const MessageInput = ({ socket, userData, isLoading, setIsLoading }) => {
   const [ value, setValue ] = useState('')
   const classes = useStyles()
 
@@ -30,7 +30,7 @@ const NewMessage = ({ socket, isLoading, setIsLoading }) => {
     e.preventDefault()
     if (value) {
       setIsLoading(true)
-      socket.timeout(5000).emit('sendMessage', value, () => {
+      socket.timeout(5000).emit('sendMessage', { player: userData, message: value }, () => {
         setIsLoading(false)
       })
       setValue('')
@@ -53,4 +53,4 @@ const NewMessage = ({ socket, isLoading, setIsLoading }) => {
   )
 }
 
-export default NewMessage
+export default MessageInput

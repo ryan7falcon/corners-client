@@ -6,54 +6,39 @@ import styles from '../styles'
 const useStyles = createUseStyles({
   ...styles,
 
-  joinBtn: {
+  createBtn: {
     extend: 'btn',
-    background: 'deepskyblue',
+    background: 'limegreen',
     marginTop: 0,
-    marginRight: '20px'
+    marginLeft: '20px'
   }
 })
 
-const JoinRoom = ({ socket, setUserData, userData, setError }) => {
+const CreateRoom = ({ socket, setUserData, userData, icons }) => {
   const [ roomValue, setRoomValue ] = useState('')
   const [ isLoading, setIsLoading ] = useState(false)
   const classes = useStyles()
 
-  const submitForm = (e) => {
-    e.preventDefault()
+  const createRoom = () => {
     setIsLoading(true)
-    socket.timeout(5000).emit('join',
-      { roomId: roomValue, username: userData.username },
+    socket.timeout(5000).emit('createRoom',
+      { username: userData.username, icons },
       (err, { error, room, player }) => {
         setIsLoading(false)
         if (err) {
           console.log(err)
         } else
           if (error) {
-            setError(error)
             console.log(error)
           } else {
             setUserData(player)
           }
       })
-
   }
 
   return socket && userData.username && !userData.roomId
-    ?
-    <form onSubmit={submitForm}>
-      <input
-        autoFocus
-        value={roomValue}
-        placeholder="Enter room name"
-        onChange={(e) => {
-          setRoomValue(e.currentTarget.value)
-        }}
-        required
-      />
-      <button className={classes.joinBtn} type="submit" disabled={isLoading}>Join Room</button>
-    </form>
+    ? <button className={classes.createBtn} disabled={isLoading} onClick={createRoom}>Create New Room</button>
     : ''
 }
 
-export default JoinRoom
+export default CreateRoom

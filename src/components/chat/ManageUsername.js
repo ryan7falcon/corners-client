@@ -25,7 +25,6 @@ const useStyles = createUseStyles({
     alignItems: 'center',
   },
   yourName: {
-    // marginTop: '4px',
     fontSize: 'calc(10px + 1vmin)'
   }
 })

@@ -29,11 +29,9 @@ export default function Chat({ socket, userData, isLoading, setIsLoading }) {
   const classes = useStyles()
 
   return socket
-    ? <div className={classes.chatContainer} hidden={!userData.room || !socket.connected}>
+    ? <div className={classes.chatContainer} hidden={!userData.roomId || !socket.connected}>
       <MessageInput socket={socket} userData={userData} isLoading={isLoading} setIsLoading={setIsLoading} />
       <Messages socket={socket} userData={userData} />
     </div > : ''
-
-
 }
 
