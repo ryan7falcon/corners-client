@@ -18,19 +18,23 @@ const useStyles = createUseStyles({
 
   restartBtn: {
     extend: 'btn',
-    background: 'limegreen'
+    background: 'limegreen',
+    marginBottom: 'calc(10px + 2vmin)'
+  },
+  itIsYourTurn: {
+    marginTop: 'calc(10px + 2vmin)',
   }
 })
 
-function EndTurnBtn({ endTurnAllowed, handleEndTurn }) {
+function EndTurnBtn({ endTurnAllowed, handleEndTurn, icon }) {
   const classes = useStyles()
   return (
-    <button
+    endTurnAllowed ? <button
       className={classes.endTurnBtn} disabled={!endTurnAllowed} onClick={(e) => {
         handleEndTurn()
       }}
     >End Turn
-    </button>
+    </button> : <div className={classes.itIsYourTurn}>{`It is your turn, ${icon}`}</div>
   )
 }
 

@@ -1,10 +1,6 @@
-import { useReducer, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import axios from "axios"
-
-import { trace } from '../../util'
-import { callAPIAction, successAction, errorAction, endTurnAction, selectCellAction, restartGameAction, gameBrain } from '../../brain/Game'
-import { restartGame } from '../../brain/api'
 
 import DisplayState from './DisplayState'
 import DisplayBoard from './DisplayBoard'
@@ -22,15 +18,19 @@ const useStyles = createUseStyles({
   },
   message: {
     fontSize: 'calc(10px + 2vmin)',
-    // margin: {
-    //   top: 'calc(10px + 2vmin)',
-    //   bottom: 'calc(10px + 2vmin)'
-    // }
   },
   gameColumn: {
     display: 'flex',
     flexDirection: 'column'
   },
+  roomCode: {
+    fontSize: 'calc(10px + 3vmin)',
+    color: 'gold',
+    fontWeight: 800
+  },
+  waitForYourTurn: {
+    marginTop: 'calc(10px + 2vmin)',
+  }
 })
 
 
@@ -39,73 +39,88 @@ const api = axios.create({
   baseURL: "http://localhost:3001"
 })
 
-export default function GameContainer({ socket, icons, userData }) {
-  const { roomId } = userData
-  const [ state, dispatch ] = useReducer(gameBrain, { loading: false })
+
+
+export default function GameContainer({ socket, icons, userData, roomData }) {
+  const { roomId, icon } = userData
+  const { game } = roomData
+  const [ serverError, setServerError ] = useState()
+
+  const isPlayersTurn = Number(userData.player[ userData.player.length - 1 ]) === game?.playerTurn
+  const bothPlayersJoined = roomData.player1 && roomData.player2
+
   // params: row, column and piece (1- for player 1, 2 - for player 2, 0 - for empty spot) of the target (intention to switch selection)
-  const handleSelectCell = (target) => dispatch(selectCellAction(target))
 
-  const handleEndTurn = () => dispatch(endTurnAction())
-
-  const handleRestartGame = async () => {
-    dispatch(callAPIAction())
-    socket.timeout(5000).emit('restartGame', { player: userData }, (err, { error, room, player }) => {
-      if (err) {
-        console.log('restart game err', err)
-        return dispatch(errorAction(err))
-      }
-      if (error) {
-        console.log('restart game error', error)
-        return dispatch(errorAction(error))
-      }
-      dispatch(successAction(room.game))
-    })
+  const handleCallbackError = (err, { error, room, player }) => {
+    if (err) {
+      console.log('restart game err', err)
+      setServerError(err)
+    }
+    if (error) {
+      console.log('restart game error', error)
+      setServerError(error)
+    }
   }
 
-  // fetch from server
-  // const [ data, setData ] = useState(null)
+  const handleSelectCell = (target) => {
+    if (isPlayersTurn && bothPlayersJoined) socket.timeout(5000).emit('selectCell', { player: userData, target }, handleCallbackError)
+  }
+
+  const handleEndTurn = () => {
+    socket.timeout(5000).emit('endTurn', { player: userData }, handleCallbackError)
+  }
+
+  const handleRestartGame = async () => {
+    socket.timeout(5000).emit('restartGame', { player: userData }, handleCallbackError)
+  }
+
 
   useEffect(() => {
-    // api.get('api')
-    //   // .then(trace('data'))
-    //   .then((response) => setData(response.data.message))
-
     // Initial game start
-    if (!state.game && !state.loading && roomId) {
+    if (!game && roomId) {
       console.log('restarting the game')
       handleRestartGame()
     }
   }, [])
 
-
+  // TODO: add hotseat option
   const classes = useStyles()
+
+
   return <div className={classes.gameContainer}>
     {/* <p>{!data ? "Loading message..." : data}</p> */}
     {/* <div>{userData.player}{userData.icon}{userData.username}</div> */}
     <>{
-      state.loading || !state.game
+      !game
         ? "Loading game..."
-        : state.error
-          ? "There was an error"
+        : serverError
+          ? `There was an error ${serverError}`
           : <>
-            <div className={classes.gameColumn}>
-              <DisplayState state={state.game} />
+            {bothPlayersJoined
+              ? <div className={classes.gameColumn}>
+                <DisplayState state={game} />
 
-              <div className={classes.message}>{state.game.moveMessage}</div>
-              <div className={classes.message}>{state.game.turnMessage}</div>
+                <div className={classes.message}>{game.moveMessage}</div>
+                <div className={classes.message}>{game.turnMessage}</div>
 
-              <div id='allowed-moves' />
+                <div id='allowed-moves' />
 
-              {state.game.loserFinished
-                ? <RestartGameBtn handleRestartGame={handleRestartGame} />
-                : <EndTurnBtn
-                  endTurnAllowed={state.game.endTurnAllowed}
-                  handleEndTurn={handleEndTurn}
-                />
-              }
-            </div>
+                {game.loserFinished
+                  ? <RestartGameBtn handleRestartGame={handleRestartGame} />
+                  : isPlayersTurn ? <EndTurnBtn
+                    endTurnAllowed={game.endTurnAllowed}
+                    handleEndTurn={handleEndTurn}
+                    icon={icon}
+                  /> : <div className={classes.waitForYourTurn}>{`Wait for your turn, ${icon}`}</div>
+                }
+              </div>
+              : <div>
+                <p>Waiting for the other player to join. Room code is </p>
+                <p className={classes.roomCode}>{roomData.roomId}</p>
 
-            <DisplayBoard state={state.game} handleSelectCell={handleSelectCell} />
+              </div>
+            }
+            <DisplayBoard state={game} handleSelectCell={handleSelectCell} isPlayersTurn={isPlayersTurn} />
           </>
     }
     </>

@@ -29,7 +29,7 @@ const useStyles = createUseStyles({
   }
 })
 
-export default function ManageUsername({ username, setUsername, isLoading, setIsLoading, setShowChangeUsername, showChangeUsername }) {
+export default function ManageUsername({ username, setUsername, isLoading, setIsLoading, setShowChangeUsername, showChangeUsername, icon }) {
   const classes = useStyles()
 
   return (
@@ -37,7 +37,7 @@ export default function ManageUsername({ username, setUsername, isLoading, setIs
       {username ?
         !showChangeUsername
           ? <div className={classes.usernameDisplay}>
-            <span className={classes.yourName}>{username}</span>
+            <span className={classes.yourName}>{username} is {icon}</span>
             <button className={classes.usernameBtn} onClick={() => setShowChangeUsername(true)} disabled={isLoading}>Change Username</button>
           </div>
           :

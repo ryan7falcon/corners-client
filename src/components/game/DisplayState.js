@@ -1,5 +1,4 @@
 import { createUseStyles } from 'react-jss'
-import { getPlayerIcon } from '../../brain/nextState/messages'
 
 const useStyles = createUseStyles({
   propertyContainer: {
@@ -37,7 +36,7 @@ function DisplayState({ state }) {
     <div className={classes.state}>
       <div className={classes.propertyContainer}>
         <div className={state.winnerFinished ? classes.propertyName : classes.hiddenDiv}> Winner:
-          <div className={classes.propertyValue}>{getPlayerIcon(state.icons)(state.win)}</div>
+          <div className={classes.propertyValue}>{state.icons[ state.win - 1 ]}</div>
         </div>
         <div className={state.winnerFinished ? classes.propertyName : classes.hiddenDiv}>Score:
           <div className={classes.propertyValue}>{state.score.toString()}</div>

@@ -1,5 +1,6 @@
 import { createUseStyles } from 'react-jss'
-const cellSize = 'calc(8vmin)'
+import { cellSize } from './consts'
+
 const useStyles = createUseStyles({
   label: {
     overflow: 'hidden',

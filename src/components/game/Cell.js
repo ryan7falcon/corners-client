@@ -1,8 +1,7 @@
 import { createUseStyles } from 'react-jss'
 import { trace } from '../../util'
-import { getPlayerIcon } from '../../brain/nextState/messages'
+import { cellSize } from './consts'
 
-const cellSize = 'calc(8vmin)'
 
 const useStyles = createUseStyles({
   cell: {
@@ -56,7 +55,21 @@ const useStyles = createUseStyles({
   },
   validTargetJump: {
     extend: 'selectableTarget',
-    background: 'rgba(0,255,0,0.2)'
+    background: 'rgba(0,255,0,0.2)',
+  },
+  lastTurnLastMoveTarget: {
+    backgroundColor: 'rgba(255,255,255,0.05)',
+  },
+  lastTurnAnyMove: {
+    content: '',
+    '&:before': {
+      content: '""',
+      display: 'block',
+      width: '30%',
+      height: '30%',
+      borderRadius: '50%',
+      boxShadow: '0 0 10px white',
+    }
   }
 
 })
@@ -69,27 +82,30 @@ function Cell({
   isValidWalk,
   isValidJump,
   isOwnCell,
-  canDeselect }) {
+  canDeselect,
+  lastTurnLastMoveTarget,
+  lastTurnAnyMove,
+}) {
   const classes = useStyles()
   return (
     <div
       data-testid={`cell-${target.position[ 0 ]}-${target.position[ 1 ]}`}
-      className={
-        canDeselect
-          ? classes.selectedCellDeselectable
-          : isSelected
-            ? classes.selectedCell
-            : isOwnCell
-              ? classes.selectableTarget
-              : isValidWalk
-                ? classes.validTargetWalk
-                : isValidJump
-                  ? classes.validTargetJump
-                  : classes.cell}
+      className={`${canDeselect
+        ? classes.selectedCellDeselectable
+        : isSelected
+          ? classes.selectedCell
+          : isOwnCell
+            ? classes.selectableTarget
+            : isValidWalk
+              ? classes.validTargetWalk
+              : isValidJump
+                ? classes.validTargetJump
+                : classes.cell} ${lastTurnLastMoveTarget ? classes.lastTurnLastMoveTarget : lastTurnAnyMove ? classes.lastTurnAnyMove : ''}`
+      }
       key={target.position[ 0 ]}
       onClick={(e) => { handleSelect(target) }}
     >
-      {getPlayerIcon(state.icons)(target.piece)}
+      {state.icons[ target.piece - 1 ]}
     </div>
   )
 }

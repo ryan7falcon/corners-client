@@ -1,6 +1,5 @@
 import { useReducer, useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
-import io from 'socket.io-client'
 
 import Chat from './components/chat/Chat'
 import GameContainer from './components/game/GameContainer'
@@ -55,6 +54,7 @@ function App() {
   const classes = useStyles()
 
   const [ userData, setUserData ] = useState({ username: null, roomId: null })
+  const [ roomData, setRoomData ] = useState(undefined)
   const [ isLoading, setIsLoading ] = useState(false)
   const [ error, setError ] = useState(undefined)
   const [ showChangeUsername, setShowChangeUsername ] = useState(true)
@@ -97,15 +97,14 @@ function App() {
   // TODO: export turn history to a file
   // TODO: tutorial
   // TODO: unify font sizes
-  // TODO: Display who is in the room
-  // TODO: hot seat play
   // TODO: collapse chat
-
+  // TODO: reverse board for opponent
 
 
   useEffect(() => {
-    const handleRoomData = (roomData) => {
-      console.log('roomData', roomData)
+    const handleRoomData = (room) => {
+      console.log('roomData', room)
+      setRoomData(room)
     }
 
     socket.on('roomData', handleRoomData)
@@ -125,7 +124,9 @@ function App() {
           isLoading={isLoading}
           setIsLoading={setIsLoading}
           showChangeUsername={showChangeUsername}
-          setShowChangeUsername={setShowChangeUsername} />
+          setShowChangeUsername={setShowChangeUsername}
+          icon={userData.icon}
+        />
         <ManageRoom
           room={userData.roomId}
           leave={leave}
@@ -146,7 +147,7 @@ function App() {
           setUserData={setUserData}
           userData={userData}
           icons={icons}
-          setError={setError} /> or
+          setError={setError} />
         <CreateRoom
           socket={socket}
           setUserData={setUserData}
@@ -158,6 +159,7 @@ function App() {
           <GameContainer
             socket={socket}
             userData={userData}
+            roomData={roomData}
             icons={icons} /> : ''}
         <Chat
           socket={socket}

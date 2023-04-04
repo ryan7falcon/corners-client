@@ -25,8 +25,13 @@ const useStyles = createUseStyles({
   }
 
 })
-function DisplayBoard({ state, handleSelectCell }) {
+function DisplayBoard({ state, handleSelectCell, isPlayersTurn }) {
   const classes = useStyles()
+
+  const lastTurn = state.actionsHistory.slice(-1)[ 0 ]
+  const lastMoveTarget = lastTurn && lastTurn.slice(-1)[ 0 ][ 1 ]
+  console.log('lastMoveTarget', lastMoveTarget)
+  console.log('lastTurn', lastTurn)
   return (
     <div className={classes.boardContainer}>
       <div className={classes.board}>
@@ -44,11 +49,13 @@ function DisplayBoard({ state, handleSelectCell }) {
                   handleSelect={handleSelectCell}
                   target={target}
                   key={target.position}
-                  isSelected={isSelected(state, target)}
-                  isValidWalk={isValidWalk(state, target)}
-                  isValidJump={isValidJump(state, target)}
-                  isOwnCell={isOwnTarget(state, target)}
-                  canDeselect={allowedToDeselect(state, target)}
+                  isSelected={isPlayersTurn && isSelected(state, target)}
+                  isValidWalk={isPlayersTurn && isValidWalk(state, target)}
+                  isValidJump={isPlayersTurn && isValidJump(state, target)}
+                  isOwnCell={isPlayersTurn && isOwnTarget(state, target)}
+                  canDeselect={isPlayersTurn && allowedToDeselect(state, target)}
+                  lastTurnLastMoveTarget={lastTurn && arrayEquals(lastMoveTarget, target.position)}
+                  lastTurnAnyMove={lastTurn && lastTurn.some((move) => move.some((p) => arrayEquals(p, target.position)))}
                 />
               })}
             </div>
