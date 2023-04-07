@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
-
+import { backgroundColor } from './components/game/consts'
 import Chat from './components/chat/Chat'
 import GameContainer from './components/game/GameContainer'
 import JoinRoom from './components/chat/JoinRoom'
@@ -16,7 +16,7 @@ import { socket } from './socket'
 const useStyles = createUseStyles({
   app: {
     textAlign: 'center',
-    backgroundColor: '#282c34',
+    backgroundColor: backgroundColor,
     fontSize: 'calc(10px + 2vmin)',
     color: 'white',
     display: 'flex',

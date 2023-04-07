@@ -1,3 +1,3 @@
 const cellSize = 'calc(7vmin)'
-
-export { cellSize }
+const backgroundColor = '#282c34'
+export { cellSize, backgroundColor }

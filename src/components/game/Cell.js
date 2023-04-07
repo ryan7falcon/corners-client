@@ -1,6 +1,6 @@
 import { createUseStyles } from 'react-jss'
 import { trace } from '../../util'
-import { cellSize } from './consts'
+import { cellSize, backgroundColor } from './consts'
 
 
 const useStyles = createUseStyles({
@@ -47,22 +47,43 @@ const useStyles = createUseStyles({
   },
   selectedCellDeselectable: {
     extend: 'selectableTarget',
-    background: 'rgba(255,255,255,0.1)'
+    background: 'rgba(255,255,255,0.1)',
+    textShadow: '0 0 10px rgba(255,255,255,0.85)'
   },
   validTargetWalk: {
     extend: 'selectableTarget',
-    background: 'rgba(255,255,0,0.2)'
+    // background: 'rgba(255,255,0,0.2)',
+    '&:before': {
+      content: '""',
+      position: 'absolute',
+      display: 'block',
+      width: '110%',
+      height: '110%',
+      borderRadius: '50%',
+      boxShadow: '0 0 10px 5px gold',
+    }
   },
   validTargetJump: {
     extend: 'selectableTarget',
-    background: 'rgba(0,255,0,0.2)',
+    // background: 'rgba(0,255,0,0.2)',
+    '&:before': {
+      content: '""',
+      position: 'absolute',
+      zIndex: 100,
+      display: 'block',
+      width: '110%',
+      height: '110%',
+      borderRadius: '50%',
+      boxShadow: '0 0 10px 5px rgba(0,255,0,0.9)',
+    }
   },
   lastTurnLastMoveTarget: {
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    textShadow: '0 0 10px rgba(255,255,255,0.85)',
   },
-  lastTurnAnyMove: {
-    content: '',
+  lastTurnAnyMove: ({ lastTurnAnyMove, icon }) => ({
+    content: icon,
     '&:before': {
+      opacity: lastTurnAnyMove,
       content: '""',
       display: 'block',
       width: '30%',
@@ -70,6 +91,20 @@ const useStyles = createUseStyles({
       borderRadius: '50%',
       boxShadow: '0 0 10px white',
     }
+  }),
+  shadow: ({ lastTurnAnyMove }) => ({
+    opacity: lastTurnAnyMove,
+    color: 'transparent',
+    textShadow: '0px 0px 10px rgba(255,255,255,0.85)',
+    background: backgroundColor,
+  }),
+  text: {
+    position: 'absolute',
+    color: 'transparent',
+    WebkitTextFillColor: 'transparent',
+    WebkitBackgroundClip: 'text',
+    backgroundImage: 'none',
+    backgroundColor: backgroundColor,
   }
 
 })
@@ -85,8 +120,11 @@ function Cell({
   canDeselect,
   lastTurnLastMoveTarget,
   lastTurnAnyMove,
+  icon,
+  lastTurnPlayerIcon
 }) {
-  const classes = useStyles()
+  const classes = useStyles({ lastTurnAnyMove, icon })
+
   return (
     <div
       data-testid={`cell-${target.position[ 0 ]}-${target.position[ 1 ]}`}
@@ -100,11 +138,12 @@ function Cell({
               ? classes.validTargetWalk
               : isValidJump
                 ? classes.validTargetJump
-                : classes.cell} ${lastTurnLastMoveTarget ? classes.lastTurnLastMoveTarget : lastTurnAnyMove ? classes.lastTurnAnyMove : ''}`
+                : classes.cell} ${lastTurnLastMoveTarget ? classes.lastTurnLastMoveTarget : ''}`
       }
       key={target.position[ 0 ]}
       onClick={(e) => { handleSelect(target) }}
     >
+      {lastTurnAnyMove && !lastTurnLastMoveTarget ? <><div className={classes.shadow}>{lastTurnPlayerIcon}</div><div className={classes.text}>{lastTurnPlayerIcon}</div></> : ''}
       {state.icons[ target.piece - 1 ]}
     </div>
   )

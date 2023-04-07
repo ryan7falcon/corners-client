@@ -33,6 +33,7 @@ const JoinRoom = ({ socket, setUserData, userData, setError }) => {
             setError(error)
             console.log(error)
           } else {
+            console.log('player', player, error)
             setUserData(player)
           }
       })

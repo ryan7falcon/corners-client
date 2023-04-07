@@ -25,10 +25,11 @@ const useStyles = createUseStyles({
   }
 
 })
-function DisplayBoard({ state, handleSelectCell, isPlayersTurn }) {
+function DisplayBoard({ state, handleSelectCell, isPlayersTurn, icon }) {
   const classes = useStyles()
 
   const lastTurn = state.actionsHistory.slice(-1)[ 0 ]
+  const lastTurnPlayerIcon = state.icons[ (state.actionsHistory.length - 1) % 2 ]
   const lastMoveTarget = lastTurn && lastTurn.slice(-1)[ 0 ][ 1 ]
   console.log('lastMoveTarget', lastMoveTarget)
   console.log('lastTurn', lastTurn)
@@ -55,7 +56,9 @@ function DisplayBoard({ state, handleSelectCell, isPlayersTurn }) {
                   isOwnCell={isPlayersTurn && isOwnTarget(state, target)}
                   canDeselect={isPlayersTurn && allowedToDeselect(state, target)}
                   lastTurnLastMoveTarget={lastTurn && arrayEquals(lastMoveTarget, target.position)}
-                  lastTurnAnyMove={lastTurn && lastTurn.some((move) => move.some((p) => arrayEquals(p, target.position)))}
+                  lastTurnAnyMove={lastTurn && (lastTurn.findLastIndex((move) => arrayEquals(move[ 0 ], target.position)) + 1) / lastTurn.length}
+                  icon={icon}
+                  lastTurnPlayerIcon={lastTurnPlayerIcon}
                 />
               })}
             </div>

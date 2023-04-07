@@ -120,7 +120,7 @@ export default function GameContainer({ socket, icons, userData, roomData }) {
 
               </div>
             }
-            <DisplayBoard state={game} handleSelectCell={handleSelectCell} isPlayersTurn={isPlayersTurn} />
+            <DisplayBoard state={game} handleSelectCell={handleSelectCell} isPlayersTurn={isPlayersTurn} icon={icon} />
           </>
     }
     </>
