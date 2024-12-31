@@ -12,7 +12,7 @@ const useStyles = createUseStyles({
     border: '1px solid rgba(0,0,0,0)',
     position: 'relative',
     userSelect: 'none',
-    fontSize: 'calc(5vmin)'
+    fontSize: 'calc(3vmin)'
   },
 })
 

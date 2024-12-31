@@ -10,18 +10,16 @@ const useStyles = createUseStyles({
 
   gameContainer: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'start',
+    flexDirection: 'column',
     flex: 3,
-    flexWrap: 'wrap',
   },
   message: {
     fontSize: 'calc(10px + 2vmin)',
   },
   gameColumn: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    marginBottom: '10px'
   },
   roomCode: {
     fontSize: 'calc(10px + 3vmin)',
@@ -30,6 +28,17 @@ const useStyles = createUseStyles({
   },
   waitForYourTurn: {
     marginTop: 'calc(10px + 2vmin)',
+    marginBottom: 'calc(10px + 2vmin)',
+  },
+  turnRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  itIsYourTurn: {
+    marginTop: 'calc(10px + 2vmin)',
+    marginBottom: 'calc(10px + 2vmin)',
   }
 })
 
@@ -42,7 +51,7 @@ const api = axios.create({
 
 
 export default function GameContainer({ socket, icons, userData, roomData }) {
-  const { roomId, icon } = userData
+  const { roomId, icon, player } = userData
   const { game } = roomData
   const [ serverError, setServerError ] = useState()
 
@@ -100,19 +109,27 @@ export default function GameContainer({ socket, icons, userData, roomData }) {
               ? <div className={classes.gameColumn}>
                 <DisplayState state={game} />
 
-                <div className={classes.message}>{game.moveMessage}</div>
-                <div className={classes.message}>{game.turnMessage}</div>
+                {/* <div className={classes.message}>{game.moveMessage}</div> */}
+                {/* <div className={classes.message}>{game.turnMessage}</div> */}
 
                 <div id='allowed-moves' />
-
+                <div className={classes.turnRow}>
                 {game.loserFinished
                   ? <RestartGameBtn handleRestartGame={handleRestartGame} />
-                  : isPlayersTurn ? <EndTurnBtn
+                  : isPlayersTurn ? <>
+                  <div className={classes.itIsYourTurn}>
+                    {game.win 
+                    ? `It's your turn until you finish, each turn adds to the winner's score` 
+                    : `It is your turn, ${icon}`}
+                  </div> 
+                  < EndTurnBtn
                     endTurnAllowed={game.endTurnAllowed}
                     handleEndTurn={handleEndTurn}
                     icon={icon}
-                  /> : <div className={classes.waitForYourTurn}>{`Wait for your turn, ${icon}`}</div>
+                  />
+                  </> : <div className={classes.waitForYourTurn}>{game.win ? `You have won! Wait for the other player to finish` : `Wait for your turn, ${icon}`}</div>
                 }
+              </div>
               </div>
               : <div>
                 <p>Waiting for the other player to join. Room code is </p>
@@ -120,7 +137,7 @@ export default function GameContainer({ socket, icons, userData, roomData }) {
 
               </div>
             }
-            <DisplayBoard state={game} handleSelectCell={handleSelectCell} isPlayersTurn={isPlayersTurn} icon={icon} />
+            <DisplayBoard state={game} handleSelectCell={handleSelectCell} isPlayersTurn={isPlayersTurn} icon={icon} reverseBoard={player === 'player2'} />
           </>
     }
     </>

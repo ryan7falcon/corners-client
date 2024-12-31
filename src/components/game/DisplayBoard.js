@@ -25,24 +25,41 @@ const useStyles = createUseStyles({
   }
 
 })
-function DisplayBoard({ state, handleSelectCell, isPlayersTurn, icon }) {
+
+const I = (x) => x
+const reverse = (o) => o.slice().reverse()
+
+function DisplayBoard({ state, handleSelectCell, isPlayersTurn, icon, reverseBoard }) {
   const classes = useStyles()
+
+  const applyReverseF = (f) => reverseBoard ? f : I
+  const maybeReverseBoard = applyReverseF(reverse)
+  const compliment = (a) => (7 - a)
+  const maybeComplimentLocation = applyReverseF((loc) => (loc.map(compliment)))
 
   const lastTurn = state.actionsHistory.slice(-1)[ 0 ]
   const lastTurnPlayerIcon = state.icons[ (state.actionsHistory.length - 1) % 2 ]
-  const lastMoveTarget = lastTurn && lastTurn.slice(-1)[ 0 ][ 1 ]
+  const lastMoveTarget = lastTurn && (lastTurn.slice(-1)[ 0 ][ 1 ])
   console.log('lastMoveTarget', lastMoveTarget)
   console.log('lastTurn', lastTurn)
+  console.log('reverseBoard', reverseBoard)
+
+
+  const getMaybeReverseLocation = (position) => {
+    const [ rowIndex, columnIndex ] = position
+    return [ applyReverseF(compliment)(rowIndex), applyReverseF(compliment)(columnIndex) ]
+  }
+
   return (
     <div className={classes.boardContainer}>
       <div className={classes.board}>
         {
-          state.board.map((row, rowIndex) => (
+          maybeReverseBoard(state.board).map((row, rowIndex) => (
             <div className={classes.row} key={rowIndex}>
-              {LocationLabel(getNumber(rowIndex))}
-              {row.map((x, columnIndex) => {
+              {LocationLabel(getNumber(applyReverseF(compliment)(rowIndex)))}
+              {maybeReverseBoard(row).map((x, columnIndex) => {
                 const target = {
-                  position: [ rowIndex, columnIndex ],
+                  position: getMaybeReverseLocation([ rowIndex, columnIndex ]),
                   piece: x
                 }
                 return <Cell
@@ -56,7 +73,7 @@ function DisplayBoard({ state, handleSelectCell, isPlayersTurn, icon }) {
                   isOwnCell={isPlayersTurn && isOwnTarget(state, target)}
                   canDeselect={isPlayersTurn && allowedToDeselect(state, target)}
                   lastTurnLastMoveTarget={lastTurn && arrayEquals(lastMoveTarget, target.position)}
-                  lastTurnAnyMove={lastTurn && (lastTurn.findLastIndex((move) => arrayEquals(move[ 0 ], target.position)) + 1) / lastTurn.length}
+                  lastTurnAnyMove={lastTurn && (lastTurn.findLastIndex((move) => arrayEquals((move[ 0 ]), target.position)) + 1) / lastTurn.length}
                   icon={icon}
                   lastTurnPlayerIcon={lastTurnPlayerIcon}
                 />
@@ -65,7 +82,7 @@ function DisplayBoard({ state, handleSelectCell, isPlayersTurn, icon }) {
           ))
         }
         <div className={classes.row} key={'letters'}>
-          {letters.map((letter) => LocationLabel(letter))}
+          {maybeReverseBoard(letters).slice(0, -1).map((letter) => LocationLabel(letter))}
         </div>
       </div>
     </div>

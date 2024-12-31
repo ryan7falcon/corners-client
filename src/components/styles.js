@@ -1,11 +1,19 @@
 export default {
+  btnBase:{
+    
+  },
   btn: {
     boxSizing: 'borderBox',
     marginTop: 'calc(10px + 2vmin)',
     '&:disabled': {
-      background: '#AAA',
+      background: '#ea8270',
+      color: '#954040',
       '&:after': {
         transition: 'none'
+      },
+      '&:hover': {
+        transform: 'none',
+        cursor: 'not-allowed',
       }
     },
     borderRadius: 'calc(25px + 1vmin)',

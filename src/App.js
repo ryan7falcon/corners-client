@@ -3,14 +3,14 @@ import { createUseStyles } from 'react-jss'
 import { backgroundColor } from './components/game/consts'
 import Chat from './components/chat/Chat'
 import GameContainer from './components/game/GameContainer'
-import JoinRoom from './components/chat/JoinRoom'
-import CreateRoom from './components/chat/CreateRoom'
-import EnterUsername from './components/chat/EnterUsername'
-import DisplayError from './components/chat/DisplayError'
+import JoinRoom from './components/room/JoinRoom'
+import CreateRoom from './components/room/CreateRoom'
+import EnterUsername from './components/room/EnterUsername'
+import DisplayError from './components/room/DisplayError'
 
 import './App.css'
-import ManageRoom from './components/chat/ManageRoom'
-import ManageUsername from './components/chat/ManageUsername'
+import ManageRoom from './components/room/ManageRoom'
+import ManageUsername from './components/room/ManageUsername'
 import { socket } from './socket'
 
 const useStyles = createUseStyles({
@@ -90,16 +90,12 @@ function App() {
   const icons = [ '💩', '💎' ]
   // const icons = [ 'I', 'J' ]
 
-  // TODO: create server-client app with socket connections
-  // TODO: only allow to play your own turn
-  // TODO: separate server logic from DB storage logic
+  // TODO: separate server logic from DB storage logic and store data in DB
   // TODO: reconnect to lost session
-  // TODO: export turn history to a file
   // TODO: tutorial
-  // TODO: unify font sizes
   // TODO: collapse chat
   // TODO: reverse board for opponent
-
+  // TODO: BUG: flipped board for the moved piece when diamond moves
 
   useEffect(() => {
     const handleRoomData = (room) => {

@@ -57,10 +57,10 @@ const useStyles = createUseStyles({
       content: '""',
       position: 'absolute',
       display: 'block',
-      width: '110%',
-      height: '110%',
+      width: '120%',
+      height: '120%',
       borderRadius: '50%',
-      boxShadow: '0 0 10px 5px gold',
+      boxShadow: '0 0 10px 3px gold',
     }
   },
   validTargetJump: {
@@ -71,10 +71,10 @@ const useStyles = createUseStyles({
       position: 'absolute',
       zIndex: 100,
       display: 'block',
-      width: '110%',
-      height: '110%',
+      width: '120%',
+      height: '120%',
       borderRadius: '50%',
-      boxShadow: '0 0 10px 5px rgba(0,255,0,0.9)',
+      boxShadow: '0 0 10px 3px rgba(0,255,0,0.9)',
     }
   },
   lastTurnLastMoveTarget: {
