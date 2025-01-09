@@ -90,13 +90,6 @@ function App() {
   const icons = [ '💩', '💎' ]
   // const icons = [ 'I', 'J' ]
 
-  // TODO: separate server logic from DB storage logic and store data in DB
-  // TODO: reconnect to lost session
-  // TODO: tutorial
-  // TODO: collapse chat
-  // TODO: reverse board for opponent
-  // TODO: BUG: flipped board for the moved piece when diamond moves
-
   useEffect(() => {
     const handleRoomData = (room) => {
       console.log('roomData', room)

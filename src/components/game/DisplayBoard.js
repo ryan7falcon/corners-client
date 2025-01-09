@@ -40,10 +40,6 @@ function DisplayBoard({ state, handleSelectCell, isPlayersTurn, icon, reverseBoa
   const lastTurn = state.actionsHistory.slice(-1)[ 0 ]
   const lastTurnPlayerIcon = state.icons[ (state.actionsHistory.length - 1) % 2 ]
   const lastMoveTarget = lastTurn && (lastTurn.slice(-1)[ 0 ][ 1 ])
-  console.log('lastMoveTarget', lastMoveTarget)
-  console.log('lastTurn', lastTurn)
-  console.log('reverseBoard', reverseBoard)
-
 
   const getMaybeReverseLocation = (position) => {
     const [ rowIndex, columnIndex ] = position
