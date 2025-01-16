@@ -92,7 +92,7 @@ function App() {
 
   useEffect(() => {
     const handleRoomData = (room) => {
-      console.log('roomData', room)
+      // console.log('roomData', room)
       setRoomData(room)
     }
 
@@ -106,7 +106,7 @@ function App() {
   return (
     <div className={classes.app}>
       <header className={classes.appHeader}>
-        <div className={classes.gameHeader}>Game of Corners  🚧 🛠  Under Construction ⚙ 🚧</div>
+        <div className={classes.gameHeader}>Game of Corners</div>
         <ManageUsername
           username={userData.username}
           setUsername={setUsername}
