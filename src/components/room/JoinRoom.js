@@ -9,7 +9,7 @@ const useStyles = createUseStyles({
   joinBtn: {
     extend: 'btn',
     background: 'deepskyblue',
-    marginTop: 0,
+    marginTop: '5px',
     marginRight: '20px'
   }
 })
@@ -53,7 +53,7 @@ const JoinRoom = ({ socket, setUserData, userData, setError }) => {
         required
       />
       <button className={classes.joinBtn} type="submit" disabled={isLoading}>Join Room</button>
-      or
+     
     </form>
     : ''
 }

@@ -87,7 +87,7 @@ export default function GameContainer({ socket, icons, userData, roomData }) {
   useEffect(() => {
     // Initial game start
     if (!game && roomId) {
-      console.log('restarting the game')
+      // console.log('restarting the game')
       handleRestartGame()
     }
   }, [])

@@ -9,8 +9,9 @@ const useStyles = createUseStyles({
   createBtn: {
     extend: 'btn',
     background: 'limegreen',
-    marginTop: 0,
-    marginLeft: '20px'
+    marginTop: '5px',
+    marginLeft: '20px', 
+    marginRight: '20px',
   }
 })
 

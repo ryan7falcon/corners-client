@@ -6,7 +6,8 @@ import { createUseStyles } from 'react-jss'
 const useStyles = createUseStyles({
 
   errorDisplay: {
-    marginRight: '20px'
+    marginRight: '20px',
+    marginLeft: '20px'
   }
 })
 

@@ -26,6 +26,7 @@ const useStyles = createUseStyles({
   },
   appHeader: {
     display: 'flex',
+    alignItems: 'baseline',
   },
   gameHeader: {
     paddingTop: 'calc(10px + 2vmin)',
@@ -44,10 +45,13 @@ const useStyles = createUseStyles({
     display: 'flex',
     justifyContent: 'center',
     marginTop: '20px',
-    flex: 1,
+    flex: 0,
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
+  or: {
 
+  }
 })
 
 function App() {
@@ -137,6 +141,8 @@ function App() {
           userData={userData}
           icons={icons}
           setError={setError} />
+        {socket && userData.username && !userData.roomId
+          ? <div className={classes.or}>or</div> : ''}
         <CreateRoom
           socket={socket}
           setUserData={setUserData}
