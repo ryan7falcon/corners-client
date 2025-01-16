@@ -24,15 +24,15 @@ const CreateRoom = ({ socket, setUserData, userData, icons }) => {
     setIsLoading(true)
     socket.timeout(5000).emit('createRoom',
       { username: userData.username, icons },
-      (err, { error, room, player }) => {
+      (err, rest) => {
         setIsLoading(false)
         if (err) {
           console.log(err)
         } else
-          if (error) {
-            console.log(error)
+          if (rest.error) {
+            console.log(rest.error)
           } else {
-            setUserData(player)
+            setUserData(rest.player)
           }
       })
   }
