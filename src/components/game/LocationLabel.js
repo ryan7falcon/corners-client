@@ -1,16 +1,18 @@
 import { createUseStyles } from 'react-jss'
+import { cellSize } from './consts'
 
 const useStyles = createUseStyles({
   label: {
     overflow: 'hidden',
     display: 'flex',
-    width: 'calc(20px + 5vmin)',
-    height: 'calc(20px + 5vmin)',
+    width: cellSize,
+    height: cellSize,
     justifyContent: 'center',
     alignItems: 'center',
     border: '1px solid rgba(0,0,0,0)',
     position: 'relative',
-    userSelect: 'none'
+    userSelect: 'none',
+    fontSize: 'calc(3vmin)'
   },
 })
 

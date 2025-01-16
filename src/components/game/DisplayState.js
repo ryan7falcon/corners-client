@@ -1,17 +1,17 @@
 import { createUseStyles } from 'react-jss'
-import { getPlayerIcon } from '../brain/nextState/messages'
 
 const useStyles = createUseStyles({
   propertyContainer: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'center'
   },
 
   propertyName: {
     fontWeight: 100,
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginLeft: '20px'
   },
 
   propertyValue: {
@@ -24,7 +24,7 @@ const useStyles = createUseStyles({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 'calc(300px + 5vmin)'
+    marginBottom: '10px'
   },
   hiddenDiv: {
     display: 'none'
@@ -34,12 +34,12 @@ const useStyles = createUseStyles({
 function DisplayState({ state }) {
   const classes = useStyles()
   return (
-    <div className={classes.state}>
+    <div className={state.winnerFinished ? classes.state : classes.hiddenDiv}>
       <div className={classes.propertyContainer}>
-        <div className={state.winnerFinished ? classes.propertyName : classes.hiddenDiv}> Winner:
-          <div className={classes.propertyValue}>{getPlayerIcon(state.icons)(state.win)}</div>
+        <div className={classes.propertyName}>
+          {state.icons[ state.win - 1 ]} has won! {state.icons[ state.win % 2 ]} continues to finish.
         </div>
-        <div className={state.winnerFinished ? classes.propertyName : classes.hiddenDiv}>Score:
+        <div className={classes.propertyName}>Score:
           <div className={classes.propertyValue}>{state.score.toString()}</div>
         </div>
       </div>

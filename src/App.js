@@ -1,94 +1,169 @@
-import { useReducer } from 'react'
+import { useReducer, useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
+import { backgroundColor } from './components/game/consts'
+import Chat from './components/chat/Chat'
+import GameContainer from './components/game/GameContainer'
+import JoinRoom from './components/room/JoinRoom'
+import CreateRoom from './components/room/CreateRoom'
+import EnterUsername from './components/room/EnterUsername'
+import DisplayError from './components/room/DisplayError'
 
-import { endTurnAction, selectCellAction, restartGameAction, gameBrain, createInitState } from './brain/Game'
-
-import DisplayState from './display/DisplayState'
-import DisplayBoard from './display/DisplayBoard'
-import { EndTurnBtn, RestartGameBtn } from './display/Buttons'
 import './App.css'
+import ManageRoom from './components/room/ManageRoom'
+import ManageUsername from './components/room/ManageUsername'
+import { socket } from './socket'
 
 const useStyles = createUseStyles({
   app: {
-    textAlign: 'center'
+    textAlign: 'center',
+    backgroundColor: backgroundColor,
+    fontSize: 'calc(10px + 2vmin)',
+    color: 'white',
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    overflow: 'auto'
   },
   appHeader: {
-    backgroundColor: '#282c34',
-    minHeight: '100vh',
-    fontSize: 'calc(10px + 2vmin)',
-    color: 'white'
+    display: 'flex',
+    alignItems: 'baseline',
   },
   gameHeader: {
-    paddingTop: 'calc(10px + 7vmin)',
-    fontSize: 'calc(10px + 5vmin)'
+    paddingTop: 'calc(10px + 2vmin)',
+    marginBottom: 'calc(10px + 2vmin)',
+    fontSize: 'calc(10px + 3vmin)',
+    flex: 1,
   },
-  gameContainer: {
+  appContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'start',
-    paddingTop: 'calc(10px + 7vmin)'
+    flex: 1,
+    flexWrap: 'wrap',
   },
-  gameColumn: {
+  enterUserDatacontainer: {
     display: 'flex',
-    flexDirection: 'column'
+    justifyContent: 'center',
+    marginTop: '20px',
+    flex: 0,
+    alignItems: 'center',
+    flexWrap: 'wrap',
   },
-  input: {
-    borderRadius: 10,
-    padding: 'calc(10px + 0vmin)',
-    fontSize: 'calc(10px + 1vmin)'
-  },
-  message: {
-    fontSize: 'calc(10px + 2vmin)',
-    margin: {
-      top: 'calc(10px + 2vmin)',
-      bottom: 'calc(10px + 2vmin)'
-    }
+  or: {
+
   }
 })
 
 function App() {
   const classes = useStyles()
+
+  const [ userData, setUserData ] = useState({ username: null, roomId: null })
+  const [ roomData, setRoomData ] = useState(undefined)
+  const [ isLoading, setIsLoading ] = useState(false)
+  const [ error, setError ] = useState(undefined)
+  const [ showChangeUsername, setShowChangeUsername ] = useState(true)
+
+  const setUsername = (newName) => {
+    if (userData.roomId) {
+      setIsLoading(true)
+      socket.timeout(5000).emit('changeName', { player: userData, newName }, () => {
+        setIsLoading(false)
+      })
+    }
+    setUserData({
+      ...userData,
+      username: newName
+    })
+  }
+
+  const setJoinedRoom = (newRoom) => {
+    setUserData({
+      ...userData,
+      roomId: newRoom
+    })
+  }
+
+  function leave() {
+    setIsLoading(true)
+    socket.timeout(5000).emit('leave', () => {
+      setJoinedRoom(null)
+      setIsLoading(false)
+    })
+  }
+
   const icons = [ '💩', '💎' ]
+  // const icons = [ 'I', 'J' ]
 
-  const [ game, dispatch ] = useReducer(gameBrain, createInitState(icons))
+  useEffect(() => {
+    const handleRoomData = (room) => {
+      // console.log('roomData', room)
+      setRoomData(room)
+    }
 
-  // TODO: create server-client app with socket connections
-  // TODO: export turn history to a file
-  // TODO: tutorial
+    socket.on('roomData', handleRoomData)
 
-  // params: row, column and piece (1- for player 1, 2 - for player 2, 0 - for empty spot) of the target (intention to switch selection)
-  const handleSelectCell = (target) => dispatch(selectCellAction(target))
-
-  const handleEndTurn = () => dispatch(endTurnAction())
-
-  const handleRestartGame = () => dispatch(restartGameAction())
+    return () => {
+      socket.off('roomData', handleRoomData)
+    }
+  }, [])
 
   return (
     <div className={classes.app}>
       <header className={classes.appHeader}>
-        <div className={classes.gameHeader}>Game of Corners  🚧 🛠  Under Construction ⚙ 🚧</div>
-        <div className={classes.gameContainer}>
-          <DisplayBoard state={game} handleSelectCell={handleSelectCell} />
-          <div className={classes.gameColumn}>
-            <DisplayState state={game} />
-
-            <div className={classes.message}>{game.moveMessage}</div>
-            <div className={classes.message}>{game.turnMessage}</div>
-
-            <div id='allowed-moves' />
-
-            {game.loserFinished
-              ? <RestartGameBtn handleRestartGame={handleRestartGame} />
-              : <EndTurnBtn
-                endTurnAllowed={game.endTurnAllowed}
-                handleEndTurn={handleEndTurn}
-              />
-            }
-          </div>
-        </div>
-
+        <div className={classes.gameHeader}>Game of Corners</div>
+        <ManageUsername
+          username={userData.username}
+          setUsername={setUsername}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          showChangeUsername={showChangeUsername}
+          setShowChangeUsername={setShowChangeUsername}
+          icon={userData.icon}
+        />
+        <ManageRoom
+          room={userData.roomId}
+          leave={leave}
+          isLoading={isLoading} />
       </header>
+      <div className={classes.enterUserDatacontainer} hidden={userData.roomId}>
+        {!userData.username
+          ? <EnterUsername
+            username={userData.username}
+            setUsername={setUsername}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            setShowChangeUsername={setShowChangeUsername} />
+          : ''}
+        <DisplayError error={error} />
+        <JoinRoom
+          socket={socket}
+          setUserData={setUserData}
+          userData={userData}
+          icons={icons}
+          setError={setError} />
+        {socket && userData.username && !userData.roomId
+          ? <div className={classes.or}>or</div> : ''}
+        <CreateRoom
+          socket={socket}
+          setUserData={setUserData}
+          userData={userData}
+          icons={icons} />
+      </div>
+      <div className={classes.appContainer}>
+        {userData.roomId ?
+          <GameContainer
+            socket={socket}
+            userData={userData}
+            roomData={roomData}
+            icons={icons} /> : ''}
+        <Chat
+          socket={socket}
+          userData={userData}
+          setUserData={setUserData}
+          icons={icons}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading} />
+      </div>
     </div>
   )
 }

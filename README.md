@@ -44,6 +44,7 @@ This is a russian board game for two players where the objective is to move your
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 To run the project:
+First download and run the server, then:
 `yarn install`
 `yarn start`
 
