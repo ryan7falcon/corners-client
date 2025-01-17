@@ -15,11 +15,14 @@
     "socket.io-client": "^4.6.1",
     "web-vitals": "^3.0.4"
   },
+  "homepage": "http://corners.artisando.ca",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "repository": "git@github.com:ryan7falcon/corners-client.git",
   "author": "Ryan Galimova <ryan7falcon@gmail.com>",
@@ -43,5 +46,8 @@
     "env": [
       "jest"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
