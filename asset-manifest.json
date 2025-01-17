@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/corners-client/static/css/main.4fa7cec2.css",
+    "main.js": "/corners-client/static/js/main.5a47ac89.js",
+    "static/js/488.91294c6b.chunk.js": "/corners-client/static/js/488.91294c6b.chunk.js",
+    "index.html": "/corners-client/index.html",
+    "main.4fa7cec2.css.map": "/corners-client/static/css/main.4fa7cec2.css.map",
+    "main.5a47ac89.js.map": "/corners-client/static/js/main.5a47ac89.js.map",
+    "488.91294c6b.chunk.js.map": "/corners-client/static/js/488.91294c6b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4fa7cec2.css",
+    "static/js/main.5a47ac89.js"
+  ]
+}
