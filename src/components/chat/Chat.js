@@ -22,7 +22,7 @@ const useStyles = createUseStyles({
     alignItems: 'center',
     minHeight: 'calc(100px + 40vmin)',
     borderRadius: '20px',
-    background: '#2f3239';
+    background: '#2f3239'
   }
 })
 
