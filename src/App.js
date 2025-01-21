@@ -40,6 +40,7 @@ const useStyles = createUseStyles({
     justifyContent: 'center',
     flex: 1,
     flexWrap: 'wrap',
+    alignContent: 'flex-start',
   },
   enterUserDatacontainer: {
     display: 'flex',

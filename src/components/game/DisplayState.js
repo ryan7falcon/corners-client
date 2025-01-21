@@ -37,7 +37,7 @@ function DisplayState({ state }) {
     <div className={state.winnerFinished ? classes.state : classes.hiddenDiv}>
       <div className={classes.propertyContainer}>
         <div className={classes.propertyName}>
-          {state.icons[ state.win - 1 ]} has won! {state.icons[ state.win % 2 ]} continues to finish.
+          {state.icons[ state.win - 1 ]} has won! {!loserFinished ? state.icons[ state.win % 2 ] 'continues to finish.' : ''}
         </div>
         <div className={classes.propertyName}>Score:
           <div className={classes.propertyValue}>{state.score.toString()}</div>

@@ -11,8 +11,8 @@ const useStyles = createUseStyles({
   ...styles,
 
   chatContainer: {
-    margin: '20px',
-    padding: 0,
+    margin: 0,
+    padding: '20px',
     justifyContent: 'end',
     display: 'flex',
     flexDirection: 'column',
@@ -20,8 +20,9 @@ const useStyles = createUseStyles({
     width: '90%',
     fontSize: 'calc(10px + 1vmin)',
     alignItems: 'center',
-    marginTop: '0px',
     minHeight: 'calc(100px + 40vmin)',
+    borderRadius: '20px',
+    background: '#2f3239';
   }
 })
 
