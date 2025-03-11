@@ -39,6 +39,48 @@ const useStyles = createUseStyles({
   itIsYourTurn: {
     marginTop: 'calc(10px + 2vmin)',
     marginBottom: 'calc(10px + 2vmin)',
+  },
+  gameRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',    
+  }, 
+  rulesPane: {
+    position: 'absolute', 
+    zIndex: 1,
+    transition: 'all 0.5s ease', 
+    left:0,
+    top: '10vh',
+    height: 'calc(100vh - 420px)',
+    width: 'calc(100vw - 40px)',
+    transform: 'translateX(-93%)', 
+    '&:hover': {
+      transform: 'translateX(0)'
+    },
+    display: 'flex',
+  } ,
+  rulesContainer: {
+    backgroundColor: '#2f3239',
+    display: 'flex',
+    height: 'calc(100vh - 400px)',
+    width: 'calc(100vw - 200px)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    width: '100%',
+  },
+  rulesTab: {
+    backgroundColor: 'tomato',
+    writingMode: 'sideways-lr',
+    borderRadius: '0 10px 10px 0',
+    cursor: 'pointer',
+    alignItems: 'center',
+    display: 'flex',
+  },
+  rulesLink: {
+    color: '#282c34',
+    transform: 'rotate(-90deg)',
   }
 })
 
@@ -137,7 +179,11 @@ export default function GameContainer({ socket, icons, userData, roomData }) {
 
               </div>
             }
-            <DisplayBoard state={game} handleSelectCell={handleSelectCell} isPlayersTurn={isPlayersTurn} icon={icon} reverseBoard={player === 'player2'} />
+            <div className={classes.gameRow}>
+              <div className={classes.rulesPane}><div className={classes.rulesContainer}>Rules here</div><div className={classes.rulesTab}><div className={classes.rulesLink}>Rules</div></div></div>
+            
+              <DisplayBoard state={game} handleSelectCell={handleSelectCell} isPlayersTurn={isPlayersTurn} icon={icon} reverseBoard={player === 'player2'} />
+            </div>
           </>
     }
     </>
