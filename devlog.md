@@ -7,4 +7,4 @@ TODO: tutorial
 TODO: end turn button should be biger in the end
 
 In Progress
-TODO: watch out for the undefined bug
+replace dynamodb with mongoDB
