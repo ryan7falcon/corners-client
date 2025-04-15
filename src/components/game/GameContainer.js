@@ -5,6 +5,7 @@ import axios from "axios"
 import DisplayState from './DisplayState'
 import DisplayBoard from './DisplayBoard'
 import { EndTurnBtn, RestartGameBtn } from './GameButtons'
+import Rules from './Rules'
 
 const useStyles = createUseStyles({
 
@@ -43,44 +44,7 @@ const useStyles = createUseStyles({
   gameRow: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',    
-  }, 
-  rulesPane: {
-    position: 'absolute', 
-    zIndex: 1,
-    transition: 'all 0.5s ease', 
-    left:0,
-    top: '10vh',
-    height: 'calc(100vh - 420px)',
-    width: 'calc(100vw - 40px)',
-    transform: 'translateX(-93%)', 
-    '&:hover': {
-      transform: 'translateX(0)'
-    },
-    display: 'flex',
-  } ,
-  rulesContainer: {
-    backgroundColor: '#2f3239',
-    display: 'flex',
-    height: 'calc(100vh - 400px)',
-    width: 'calc(100vw - 200px)',
-    flexDirection: 'column',
-    alignItems: 'center',
     justifyContent: 'center',
-    height: '100%',
-    width: '100%',
-  },
-  rulesTab: {
-    backgroundColor: 'tomato',
-    writingMode: 'sideways-lr',
-    borderRadius: '0 10px 10px 0',
-    cursor: 'pointer',
-    alignItems: 'center',
-    display: 'flex',
-  },
-  rulesLink: {
-    color: '#282c34',
-    transform: 'rotate(-90deg)',
   }
 })
 
@@ -96,6 +60,7 @@ export default function GameContainer({ socket, icons, userData, roomData }) {
   const { roomId, icon, player } = userData
   const { game } = roomData
   const [ serverError, setServerError ] = useState()
+  const [ show, setShow ] = useState()
 
   const isPlayersTurn = Number(userData.player[ userData.player.length - 1 ]) === game?.playerTurn
   const bothPlayersJoined = roomData.player1 && roomData.player2
@@ -156,22 +121,22 @@ export default function GameContainer({ socket, icons, userData, roomData }) {
 
                 <div id='allowed-moves' />
                 <div className={classes.turnRow}>
-                {game.loserFinished
-                  ? <RestartGameBtn handleRestartGame={handleRestartGame} />
-                  : isPlayersTurn ? <>
-                  <div className={classes.itIsYourTurn}>
-                    {game.win 
-                    ? `It's your turn until you finish, each turn adds to the winner's score` 
-                    : `It is your turn, ${icon}`}
-                  </div> 
-                  < EndTurnBtn
-                    endTurnAllowed={game.endTurnAllowed}
-                    handleEndTurn={handleEndTurn}
-                    icon={icon}
-                  />
-                  </> : <div className={classes.waitForYourTurn}>{game.win ? `You have won! Wait for the other player to finish` : `Wait for your turn, ${icon}`}</div>
-                }
-              </div>
+                  {game.loserFinished
+                    ? <RestartGameBtn handleRestartGame={handleRestartGame} />
+                    : isPlayersTurn ? <>
+                      <div className={classes.itIsYourTurn}>
+                        {game.win
+                          ? `It's your turn until you finish, each turn adds to the winner's score`
+                          : `It is your turn, ${icon}`}
+                      </div>
+                      < EndTurnBtn
+                        endTurnAllowed={game.endTurnAllowed}
+                        handleEndTurn={handleEndTurn}
+                        icon={icon}
+                      />
+                    </> : <div className={classes.waitForYourTurn}>{game.win ? `You have won! Wait for the other player to finish` : `Wait for your turn, ${icon}`}</div>
+                  }
+                </div>
               </div>
               : <div>
                 <p>Waiting for the other player to join. Room code is </p>
@@ -180,8 +145,7 @@ export default function GameContainer({ socket, icons, userData, roomData }) {
               </div>
             }
             <div className={classes.gameRow}>
-              <div className={classes.rulesPane}><div className={classes.rulesContainer}>Rules here</div><div className={classes.rulesTab}><div className={classes.rulesLink}>Rules</div></div></div>
-            
+              <Rules state={game} show={show} setShow={setShow} />
               <DisplayBoard state={game} handleSelectCell={handleSelectCell} isPlayersTurn={isPlayersTurn} icon={icon} reverseBoard={player === 'player2'} />
             </div>
           </>
