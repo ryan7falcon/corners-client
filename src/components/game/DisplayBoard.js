@@ -12,6 +12,7 @@ const useStyles = createUseStyles({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 'calc(10px + 1vmin)',
+    flex: 1
   },
 
   board: {
